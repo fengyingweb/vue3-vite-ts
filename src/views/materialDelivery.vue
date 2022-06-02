@@ -65,7 +65,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, defineAsyncComponent, toRefs, getCurrentInstance, nextTick } from 'vue'
 import commonData from '@/common/index'
 
