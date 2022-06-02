@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <m-nav-bar></m-nav-bar>
+    <m-nav-bar right-text="注册" @click-right="onClickRight"></m-nav-bar>
 
     <div class="content">
       <van-grid :border="false" :column-num="2" :gutter="16">
@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, defineAsyncComponent, reactive, toRefs } from 'vue'
 import {useRouter} from 'vue-router'
 import { Grid, GridItem } from 'vant'
@@ -57,9 +57,14 @@ export default defineComponent({
       console.log('handleGridClick type = ', type)
       router.push({ path: `/${type}`})
     }
+
+    const onClickRight = (ev)=> {
+      router.push({path: '/register'});
+    }
     return {
       ...toRefs(homeState),
-      handleGridClick
+      handleGridClick,
+      onClickRight
     }
   },
 })
