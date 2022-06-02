@@ -7,7 +7,7 @@ import {
 
 axios.defaults.timeout = 60000 // 请求超时时间
 // axios.defaults.withCredentials = true;
-// axios.defaults.baseURL = store.getters.serverUrl;
+axios.defaults.baseURL = 'http://localhost:3001';
 
 export const DEBOUNCE_AJAX_ERR = '请求加载中，请勿重复操作'
 interface AxiosConfig {
