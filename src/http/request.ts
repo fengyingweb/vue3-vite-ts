@@ -21,14 +21,14 @@ axios.interceptors.request.use(
         // 默认有错误提示
         config.hasDefaultNotify = config.hasDefaultNotify === false ? false : true
         // 在url中设置appLang=zh-CN这个语言参数 2021-04-28
-        const appLang = convertAppLangToCookieLang(getAppLang())
-        if (config.params) {
-            config.params.appLang = appLang
-        } else {
-            config.params = {
-                appLang
-            }
-        }
+        // const appLang = convertAppLangToCookieLang(getAppLang())
+        // if (config.params) {
+        //     config.params.appLang = appLang
+        // } else {
+        //     config.params = {
+        //         appLang
+        //     }
+        // }
         // 请求要带ssoToken参数
         const ssoToken = localStorage.getItem('ssoToken')
         if (ssoToken) {
