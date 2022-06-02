@@ -26,11 +26,11 @@ export default defineConfig({
     open: false,
     cors: true, // 允许跨域
     proxy: {
-      '/api/mall': {
+      '/api/': {
         target: 'http://localhost:3001',
         ws: true,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/mall/, 'api')
+        rewrite: (path) => path.replace(/^\/api\//, 'api')
       }
     }
   },
