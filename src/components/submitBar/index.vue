@@ -118,6 +118,7 @@ export default defineComponent({
             type: Array
         }
     },
+    emits: ['submit', 'leftBtnClick', 'update:isCheck'],
     setup(props, {emit}) {
       const {ctx} = getCurrentInstance()
       let checked = ref(false)
@@ -180,8 +181,8 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .van-submit-bar__bar {
-    padding: 7px 10px 6px 15px;
-    border: solid 0.5px #e5e5e5;
+    padding: 14px 20px 12px 30px;
+    border: solid 1px #e5e5e5;
     background-color: #fff;
     box-sizing: border-box;
     justify-content: space-between;
@@ -193,36 +194,36 @@ export default defineComponent({
         }
         .van-checkbox__icon {
             > img {
-                width: 20px;
+                width: 40px;
             }
         }
         .left-button {
-            width: 110px;
-            height: 36px;
+            width: 220px;
+            height: 72px;
             box-sizing: border-box;
-            border-radius: 4px;
+            border-radius: 8px;
             border-color: #646efa;
-            font-size: 15px;
+            font-size: 30px;
             line-height: 1.4;
             color: #646efa;
-            margin-right: 10px;
+            margin-right: 20px;
         }
         .self-display {
             width: 43%;
             box-sizing: border-box;
-            padding: 0 10px;
-            font-size: 12px;
+            padding: 0 20px;
+            font-size: 24px;
             line-height: 1.4;
             color: #666;
         }
     }
     > .van-button--danger {
-        width: 120px;
-        height: 36px;
-        border-radius: 4px;
+        width: 240px;
+        height: 72px;
+        border-radius: 8px;
         background-color: #646efa;
         border: none;
-        font-size: 15px;
+        font-size: 30px;
         line-height: 1.4;
     }
     > .van-submit-bar__text {
@@ -230,14 +231,14 @@ export default defineComponent({
         justify-content: flex-end;
         flex-wrap: wrap;
         align-items: center;
-        padding-right: 4px;
-        font-size: 14px;
+        padding-right: 8px;
+        font-size: 28px;
         color: #333;
         line-height: 1.37;
         max-width: 30%;
 
         > .van-submit-bar__price {
-            font-size: 18px;
+            font-size: 36px;
             line-height: 1.4;
             color: #f56;
             white-space: nowrap; /*强制不换行*/
@@ -245,22 +246,22 @@ export default defineComponent({
             text-overflow: ellipsis; /*超出部分显示省略号*/
         }
         > .van-submit-bar__price::first-letter {
-            font-size: 18px !important;
+            font-size: 36px !important;
         }
     }
     .check-amount-tip {
-        max-width: 85px;
-        font-size: 12px;
+        max-width: 170px;
+        font-size: 24px;
         transform: scale(0.83);
         color: #666;
-        margin-left: 3px;
+        margin-left: 6px;
     }
 }
 </style>
 <style lang="less">
 .m-submit-bar {
     .van-checkbox__label {
-        font-size: 13px;
+        font-size: 26px;
         color: #666;
     }
 }
