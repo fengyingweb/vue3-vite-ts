@@ -17,9 +17,9 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'src') // 设置 `@` 指向 `src` 目录
     },
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+    extensions: ['.js', '.ts', '.vue', '.jsx', '.tsx', '.json']
   },
-  base: './', // 设置打包路径
+  base: './', // 设置打包后文件引用路径
   server: {
     port: 3000,
     host: '0.0.0.0',
@@ -42,7 +42,8 @@ export default defineConfig({
           assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
       },
     },
-    terserOptions: {
+    minify: 'terser',
+    terserOptions: { // 需要把build.minify设置为terser才会生效
       compress: {
         drop_console: true,
         drop_debugger: true
