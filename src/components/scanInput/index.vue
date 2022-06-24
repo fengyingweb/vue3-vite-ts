@@ -99,6 +99,7 @@ export default defineComponent({
           default: false
         }
     },
+    emits: ['update:inputText', 'handle-click', 'inputSubmit', 'handle-right-click', 'send-checked-status', 'focus'],
     setup(props, {emit}) {
       const {ctx} = getCurrentInstance()
       const scanInputState = reactive({
@@ -270,11 +271,11 @@ export default defineComponent({
         background-color: transparent;
     }
     .van-cell {
-        padding: 7px 16px 5px 16px;
-        font-size: 15px;
+        padding: 14px 32px 10px 32px;
+        font-size: 30px;
         background: #fff;
-        border: 1px solid #646efa;
-        border-radius: 4px;
+        border: 2px solid #646efa;
+        border-radius: 8px;
         align-items: center;
     }
     .van-hairline--top-bottom::after {
@@ -288,46 +289,46 @@ export default defineComponent({
     .van-field__left-icon {
         margin-right: 8px;
         > .van-icon {
-            font-size: 16px;
+            font-size: 32px;
         }
     }
     &.has-key-board > .van-switch-text {
-        right: 65px;
+        right: 130px;
     }
     .van-switch-text {
         position: fixed;
-        top: 55px;
-        right: 30px;
+        top: 110px;
+        right: 60px;
     }
     .van-switch-text-active {
-        width: 80px;
-        height: 20px;
-        line-height: 20px;
+        width: 160px;
+        height: 40px;
+        line-height: 40px;
         &::before {
             content: attr(switchText);
-            width: 35px;
-            font-size: 10px;
+            width: 70px;
+            font-size: 20px;
             text-align: center;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             color: #999999;
             position: absolute;
             top: 50%;
-            left: 3px;
+            left: 6px;
             transform: translate(0, -50%);
         }
         .van-switch__node {
-            width: 42px;
-            height: 22px;
-            border-radius: 11px;
-            top: -1px;
+            width: 84px;
+            height: 44px;
+            border-radius: 22px;
+            top: -2px;
             background: #f56;
             color: white;
             &::after {
                 content: attr(switchText);
-                width: 35px;
-                font-size: 10px;
+                width: 70px;
+                font-size: 20px;
                 text-align: center;
-                letter-spacing: 2px;
+                letter-spacing: 4px;
                 position: absolute;
                 top: 50%;
                 left: 50%;
@@ -336,36 +337,36 @@ export default defineComponent({
         }
     }
     .van-switch-text-inactive {
-        width: 80px;
-        height: 20px;
-        line-height: 20px;
+        width: 160px;
+        height: 40px;
+        line-height: 40px;
         &::before {
             content: attr(switchText);
-            width: 35px;
-            font-size: 10px;
+            width: 70px;
+            font-size: 20px;
             text-align: center;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             color: #999999;
             position: absolute;
             top: 50%;
-            right: 3px;
+            right: 6px;
             transform: translate(0, -50%);
         }
         .van-switch__node {
-            width: 42px;
-            height: 22px;
-            border-radius: 11px;
-            top: -1px;
-            left: -2px;
+            width: 84px;
+            height: 44px;
+            border-radius: 22px;
+            top: -2px;
+            left: -4px;
             background: #646efa;
             color: white;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             &::after {
                 content: attr(switchText);
-                width: 35px;
-                font-size: 10px;
+                width: 70px;
+                font-size: 20px;
                 text-align: center;
-                letter-spacing: 2px;
+                letter-spacing: 4px;
                 position: absolute;
                 top: 50%;
                 left: 50%;
@@ -378,8 +379,8 @@ export default defineComponent({
     }
     .van-field__right-icon {
         .van-icon__image {
-            height: 18px;
-            width: 18px;
+            height: 36px;
+            width: 36px;
         }
     }
     .van-field--disabled {
