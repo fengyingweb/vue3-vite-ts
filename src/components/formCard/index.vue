@@ -158,6 +158,7 @@ export default defineComponent({
             default: false
         }
     },
+    emits: ['fieldEdit', 'inputChange', 'inputEnter', 'clickInputRightIcon', 'scanInputSubmit', 'scanInputRightIconClick'],
     setup(props, {emit}) {
       const {ctx} = getCurrentInstance()
       // 计算最大的行数
@@ -255,16 +256,16 @@ export default defineComponent({
 @import '@/assets/css/list-item.less';
 .form-card {
     .row {
-        margin: 8px 0;
+        margin: 16px 0;
     }
     .input-box {
-        padding: 0 28px 0 5px;
+        padding: 0 56px 0 10px;
         width: 90%;
         .van-cell { 
-            padding: 2px 5px;
+            padding: 4px 10px;
             background: #fff;
-            border: 1px solid #646efa;
-            border-radius: 4px;
+            border: 2px solid #646efa;
+            border-radius: 8px;
         }
     }
     .scan-input-box {
@@ -277,11 +278,11 @@ export default defineComponent({
     .scan-input-box {
         width: 90%;
         .van-cell {
-            padding: 2px 5px;
+            padding: 4px 10px;
         }
         .scan-input {
             input {
-                font-size: 13px;
+                font-size: 26px;
             }
         }
     }
