@@ -66,11 +66,11 @@ export default defineComponent({
         background-color: transparent;
     }
     .van-cell {
-        padding: 7px 16px 5px 16px;
-        font-size: 15px;
+        padding: 14px 32px 10px 32px;
+        font-size: 30px;
         background: #fff;
-        border: 1px solid #f56;
-        border-radius: 4px;
+        border: 2px solid #f56;
+        border-radius: 8px;
     }
     .van-hairline--top-bottom::after {
         border-width: 0;
@@ -81,14 +81,14 @@ export default defineComponent({
 .select-input {
     position: relative;
     .van-field__left-icon {
-        margin-right: 8px;
+        margin-right: 16px;
         > .van-icon {
-            font-size: 16px;
+            font-size: 32px;
         }
     }
     .van-field__right-icon {
         .van-icon {
-            font-size: 18px;
+            font-size: 36px;
         }
     }
     .van-field--disabled {
