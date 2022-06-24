@@ -10,6 +10,7 @@
           placeholder="请输入用户名"
           clearable
           required
+          autocomplete="off"
           :rules="[{ required: true, message: '请填写用户名' }]"
         ></van-field>
         <van-field
@@ -19,6 +20,7 @@
           placeholder="请输入密码"
           clearable
           required
+          autocomplete="off"
           :rules="[{ required: true, message: '请填写密码' }]"
         ></van-field>
       </van-cell-group>
@@ -73,13 +75,13 @@ export default defineComponent({
 
 <style lang="less" scoped>
   .cell-group {
-    margin-top: 16px;
+    margin-top: 32px;
   }
   .btn-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 16px;
-    padding: 0 16px;
+    margin-top: 32px;
+    padding: 0 32px;
   }
 </style>
