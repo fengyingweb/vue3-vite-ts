@@ -49,6 +49,7 @@ export default defineComponent({
             default: ''
         }
     },
+    emits: ['long-tap'],
     setup(props, {emit}) {
       /**
       * 处理长按事件
@@ -92,7 +93,7 @@ export default defineComponent({
     .van-collapse-item {
         position: relative;
         .van-cell {
-            padding: 8px 5px 7px 0;
+            padding: 16px 10px 14px 0;
             background: transparent;
         }
         .van-collapse-item__wrapper {
@@ -100,7 +101,7 @@ export default defineComponent({
                 padding-left: 0;
                 padding-right: 0;
                 padding-top: 0;
-                padding-bottom: 5px;
+                padding-bottom: 10px;
                 background: transparent;
             }
         }
