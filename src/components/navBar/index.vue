@@ -6,7 +6,8 @@
       :title="title"
       left-arrow
       v-bind="$attrs"
-      @click-left="clickLeft">
+      @click-left="clickLeft"
+      @click-right="onClickRight">
     </van-nav-bar>
   </div>
 </template>
@@ -21,6 +22,7 @@ export default defineComponent({
       default: ''
     }
   },
+  emits: ['navBack', 'click-right'],
   setup(props, {emit}) {
     const route = useRoute()
     const router = useRouter()
@@ -33,9 +35,13 @@ export default defineComponent({
       emit('navBack')
       router.back(-1)
     }
+    const onClickRight = (ev)=> {
+      emit('click-right', ev)
+    }
     return {
       title,
-      clickLeft
+      clickLeft,
+      onClickRight
     }
   },
 })
@@ -43,7 +49,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
   .nav-bar-wrapper {
-    height: 46px;
+    height: 92px;
   }
   .m-nav-bar {
     background-color: #f56;
@@ -56,6 +62,9 @@ export default defineComponent({
       color: #fff;
     }
     .van-nav-bar__title {
+      color: #fff;
+    }
+    .van-nav-bar__text {
       color: #fff;
     }
   }
