@@ -40,15 +40,15 @@ export default defineComponent({
 
 <style lang="less" scoped>
   .detail-wrapper {
-    margin-top: 16px;
-    padding: 10px 14px;
-    font-size: 14px;
+    margin-top: 32px;
+    padding: 20px 28px;
+    font-size: 28px;
     color: #666;
     background: #fff;
-    border-radius: 5px;
+    border-radius: 10px;
   }
   .detail-item {
-    margin-bottom: 12px;
+    margin-bottom: 24px;
   }
   .detail-label {
     color: #646efa;

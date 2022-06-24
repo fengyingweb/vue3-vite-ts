@@ -31,6 +31,7 @@ export default defineComponent({
             required: true
         }
     },
+    emits: ['fieldEdit', 'inputChange', 'inputEnter', 'clickInputRightIcon', 'scanInputSubmit', 'scanInputRightIconClick'],
     setup(props, {emit}) {
       const searchState = reactive({
         cardConfig: [
@@ -135,16 +136,16 @@ export default defineComponent({
 <style lang="less" scoped>
 @import '@/assets/css/list-item.less';
 .order-search-card {
-    padding: 3px 14px;
-    font-size: 14px;
+    padding: 6px 28px;
+    font-size: 28px;
     color: #666;
     background: #fff;
-    border-radius: 5px;
+    border-radius: 10px;
     .button-box {
         display: flex;
         justify-content: flex-end;
         .button {
-            margin-left: 15px;
+            margin-left: 30px;
             color: #333;
             border-color: #f56;
         }

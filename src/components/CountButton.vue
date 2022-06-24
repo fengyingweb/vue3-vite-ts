@@ -47,10 +47,10 @@ export default {
     align-items: center;
   }
   button {
-    margin: 10px auto;
-    border: 1px solid #267aff;
-    padding: 5px 12px;
-    font-size: 14px;
-    border-radius: 4px;
+    margin: 20px auto;
+    border: 2px solid #267aff;
+    padding: 10px 24px;
+    font-size: 28px;
+    border-radius: 8px;
   }
 </style>

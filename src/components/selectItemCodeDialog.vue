@@ -88,6 +88,7 @@ export default defineComponent({
       }
     }
   },
+  emits: ['update:checked', 'selectionChange', 'selectionCancel', 'searchInputChange'],
   setup(props, {emit}) {
     const {ctx} = getCurrentInstance()
     const dialogState = reactive({
@@ -194,7 +195,7 @@ export default defineComponent({
     padding: 0;
     margin-top: 0;
     .detail-list__item {
-        border-bottom: 1px solid #f5f5f5;
+        border-bottom: 2px solid #f5f5f5;
     }
 }
 </style>
