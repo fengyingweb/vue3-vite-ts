@@ -147,6 +147,7 @@ export default defineComponent({
             default: false
         }
     },
+    emits: ['selectCancel', 'selectChange', 'searchInputChange'],
     setup(props, {emit}) {
       const {ctx} = getCurrentInstance()
       const searchValue = ref('') // 搜索内容
@@ -288,11 +289,11 @@ export default defineComponent({
 <style lang="less" scoped>
 @import './css/index.less';
 .search-data-radio-box-list {
-    padding: 14px 19px 20px 21px;
+    padding: 28px 38px 40px 42px;
     .van-search__action {
-        font-size: 20px;
+        font-size: 40px;
         color: #f56;
-        line-height: 34px;
+        line-height: 68px;
     }
 }
 </style>
