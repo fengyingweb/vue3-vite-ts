@@ -25,52 +25,52 @@
         ></van-field>
       </van-cell-group>
       <div class="btn-wrapper">
-        <van-button type="danger" round block :disabled="disabled" native-type="submit">马上注册</van-button>
+        <van-button type="success" round block :loading="loading" loading-type="spinner" native-type="submit">马上注册</van-button>
       </div>
     </van-form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, ref, getCurrentInstance } from 'vue'
-import {mallStore} from '../store/mall'
-import {Form} from 'vant'
+import { defineAsyncComponent, ref, getCurrentInstance } from 'vue';
+import { useRouter } from 'vue-router';
+import { mallStore } from '../store/mall';
+import { ResData } from '../interface/index';
+import { Form } from 'vant';
 
-export default defineComponent({
+export default {
   name: 'Register',
   components: {
     mNavBar: defineAsyncComponent(()=> import('@/components/navBar')),
     [Form.name]: Form
   },
   setup() {
-    const {globalProperties} = getCurrentInstance().appContext.config
+    const { globalProperties } = getCurrentInstance().appContext.config;
+    const router = useRouter();
     const userName = ref('');
     const password = ref('');
-    const disabled = ref(false);
+    const loading = ref(false);
     const store = mallStore();
 
     const clickRegister = async (values)=> {
       console.log(values)
       if (!values) return;
-      globalProperties.$toast.loading({
-        duration: 0,
-        message: '加载中...',
-        forbidClick: true
-      })
-      disabled.value = true;
-      const res = await store.goRegister(values);
-      globalProperties.$toast.clear()
-      disabled.value = false;
-      console.log(res);
+      loading.value = true;
+      const res: ResData = await store.goRegister(values);
+      loading.value = false;
+      if (res.code === 0) {
+        globalProperties.$toast('注册成功');
+        router.replace({path: '/'});
+      }
     }
     return {
       userName,
       password,
-      disabled,
+      loading,
       clickRegister
     }
   },
-})
+}
 </script>
 
 <style lang="less" scoped>

@@ -1,71 +1,63 @@
 <template>
   <div class="wrapper">
-    <m-nav-bar right-text="注册" class="m-bar" @click-right="onClickRight"></m-nav-bar>
+    <header class="header-bar">
+      <van-row class="header-row" align="center" gutter="10">
+        <van-col span="4" class="location-col">
+          <van-icon name="location-o" color="#fff" size="20px" />
+        </van-col>
+        <van-col span="16">
+          <van-search
+            v-model="searchVal"
+            placeholder="请输入搜索关键词"
+            shape="round"
+            background="transparent"
+            class="search-bar"
+            @search="searchShop"
+            @click-left-icon="clickLeftIcon">
+          </van-search>
+        </van-col>
+        <van-col span="4" class="login-col" @click="onClickRight">登录</van-col>
+      </van-row>
+    </header>
 
-    <div class="content">
-      <div class="btn-wrapper" v-display-style-control="{styleMap: {0: 'background: yellow'}, value: 0}"></div>
-      <van-grid :border="false" :column-num="2" :gutter="16">
-        <van-grid-item
-          v-for="item in distributeType"
-          :key="item.type"
-          :text="item.name"
-          class="grid-item"
-          @click="handleGridClick(item.type)">
-        </van-grid-item>
-      </van-grid>
-    </div>
+    <section class="con-section">
+    </section>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent, reactive, toRefs, onMounted, getCurrentInstance } from 'vue'
-import {useRouter} from 'vue-router'
-import {mallStore} from '../store/mall'
-import {storeToRefs} from 'pinia'
-import { Grid, GridItem } from 'vant'
-export default defineComponent({
+import { reactive, toRefs, onMounted, getCurrentInstance } from 'vue';
+import {useRouter} from 'vue-router';
+import {mallStore} from '../store/mall';
+import {storeToRefs} from 'pinia';
+import { ResData } from '../interface/index';
+import { Col, Row, Search, Swipe, SwipeItem } from 'vant';
+export default {
+  name: 'Home',
   components: {
-    mNavBar: defineAsyncComponent(()=> import('@/components/navBar')),
-    [Grid.name]: Grid,
-    [GridItem.name]: GridItem
+    [Row.name]: Row,
+    [Col.name]: Col,
+    [Search.name]: Search,
+    [Swipe.name]: Swipe,
+    [SwipeItem.name]: SwipeItem,
   },
   setup() {
-    const {globalProperties} = getCurrentInstance().appContext.config
+    const {globalProperties} = getCurrentInstance().appContext.config;
     const router = useRouter();
     const mallState = mallStore();
     const homeState = reactive({
-      distributeType: [
-        {
-          name: '呼叫1',
-          icon: "",
-          type: 'materialDelivery'
-        },
-        {
-          name: "呼叫2",
-          icon: "",
-          type: 'receiveWarehousing'
-        },
-        {
-          name: '呼叫3',
-          icon: "",
-          type: 'callEmptyCar'
-        },
-        {
-          name: "呼叫4",
-          icon: "",
-          type: 'pointToPointCall'
-        }
-      ]
-    })
-    const {_allGoodsList} = storeToRefs(mallState)
+      searchVal: ''
+    });
+    const {_allGoodsList} = storeToRefs(mallState);
 
-    const handleGridClick = (type)=> {
-      console.log('handleGridClick type = ', type)
-      router.push({ path: `/${type}`})
+    const searchShop = (val:string)=> {
+      console.log(val)
     }
-
-    const onClickRight = (ev)=> {
-      router.push({path: '/register'});
+    const clickLeftIcon = ()=> {
+      console.log(homeState.searchVal)
+    }
+    const onClickRight = ()=> {
+      router.push({path: '/login'});
     }
 
     async function initData() {
@@ -74,7 +66,7 @@ export default defineComponent({
         message: '加载中...',
         forbidClick: true
       })
-      let res = await mallState.getAllGoodsInfo()
+      const res:ResData = await mallState.getAllGoodsInfo()
       globalProperties.$toast.clear()
       if (res.code === 0) {
         mallState.$patch(()=> {
@@ -87,45 +79,48 @@ export default defineComponent({
     })
     return {
       ...toRefs(homeState),
-      allGoodsList: _allGoodsList,
-      handleGridClick,
-      onClickRight
+      onClickRight,
+      searchShop,
+      clickLeftIcon,
     }
   },
-})
+}
 </script>
 
 <style lang="less" scoped>
   .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .btn-wrapper {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      margin: 40px auto;
-      width: 240px;
-      height: 72px;
-      background: #f56;
-      border-radius: 8px;
-      font-size: 28px;
-      color: #fff;
-      position: sticky;
-      position: -webkit-sticky;
-      top: 0px;
-      z-index: 100;
-    }
-  }
-</style>
-
-<style lang="less">
-  .grid-item {
-      .van-grid-item__content {
-        background: #f56;
+      .header-bar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 750px;
+          height: 92px;
+          background: #07c160;
+          overflow: hidden;
       }
-      .van-grid-item__text {
-        color: #fff;
+      .header-row {
+          height: 100%;
+      }
+      .location-col {
+          text-align: center;
+      }
+      .login-col {
+          height: 100%;
+          line-height: 92px;
+          text-align: center;
+          color: #fff;
+          font-size: 28px;
+      }
+      .search-bar {
+          padding: 0;
+      }
+      .con-section {
+        padding-top: 92px;
+        width: 750px;
       }
   }
 </style>
