@@ -1,126 +1,77 @@
 <template>
-  <div class="wrapper">
-    <header class="header-bar">
-      <van-row class="header-row" align="center" gutter="10">
-        <van-col span="4" class="location-col">
-          <van-icon name="location-o" color="#fff" size="20px" />
-        </van-col>
-        <van-col span="16">
-          <van-search
-            v-model="searchVal"
-            placeholder="请输入搜索关键词"
-            shape="round"
-            background="transparent"
-            class="search-bar"
-            @search="searchShop"
-            @click-left-icon="clickLeftIcon">
-          </van-search>
-        </van-col>
-        <van-col span="4" class="login-col" @click="onClickRight">登录</van-col>
-      </van-row>
-    </header>
-
-    <section class="con-section">
-    </section>
+  <div class="main">
+    <router-view v-slot="{ Component }">
+      <transition
+        name="fade"
+        mode="out-in">
+        <component :is="Component"></component>
+      </transition>
+    </router-view>
+    <van-tabbar v-model="activeBar" active-color="#07c160" :safe-area-inset-bottom="true">
+      <van-tabbar-item
+        v-for="item in tabBarList"
+        :key="item.name"
+        :name="item.name"
+        :icon="item.icon"
+        :to="item.to">
+        {{item.title}}
+      </van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 
 <script lang="ts">
-import { reactive, toRefs, onMounted, getCurrentInstance } from 'vue';
-import {useRouter} from 'vue-router';
-import {mallStore} from '../store/mall';
-import {storeToRefs} from 'pinia';
-import { ResData } from '../interface/index';
-import { Col, Row, Search, Swipe, SwipeItem } from 'vant';
+import { reactive, computed, toRefs } from 'vue';
+import { useRoute } from 'vue-router';
+import { Tabbar, TabbarItem } from 'vant';
 export default {
-  name: 'Home',
   components: {
-    [Row.name]: Row,
-    [Col.name]: Col,
-    [Search.name]: Search,
-    [Swipe.name]: Swipe,
-    [SwipeItem.name]: SwipeItem,
+    [Tabbar.name]: Tabbar,
+    [TabbarItem.name]: TabbarItem,
   },
   setup() {
-    const {globalProperties} = getCurrentInstance().appContext.config;
-    const router = useRouter();
-    const mallState = mallStore();
-    const homeState = reactive({
-      searchVal: ''
+    const route = useRoute();
+    const tabBarState = reactive({
+      tabBarList: [
+        {
+          name: 'Mall',
+          icon: 'shop',
+          to: '/mall',
+          title: '商城'
+        },
+        {
+          name: 'Category',
+          icon: 'bars',
+          to: '/category',
+          title: '分类'
+        },
+        {
+          name: 'ShopCar',
+          icon: 'shopping-cart',
+          to: '/shopcar',
+          title: '购物车'
+        },
+        {
+          name: 'Members',
+          icon: 'vip-card',
+          to: '/members',
+          title: '会员中心'
+        }
+      ]
     });
-    const {_allGoodsList} = storeToRefs(mallState);
-
-    const searchShop = (val:string)=> {
-      console.log(val)
-    }
-    const clickLeftIcon = ()=> {
-      console.log(homeState.searchVal)
-    }
-    const onClickRight = ()=> {
-      router.push({path: '/login'});
-    }
-
-    async function initData() {
-      globalProperties.$toast.loading({
-        duration: 0,
-        message: '加载中...',
-        forbidClick: true
-      })
-      const res:ResData = await mallState.getAllGoodsInfo()
-      globalProperties.$toast.clear()
-      if (res.code === 0) {
-        mallState.$patch(()=> {
-          mallState.allGoodsList = res.data
-        })
-      }
-    }
-    onMounted(()=> {
-      initData()
-    })
+    const activeBar = computed(()=> {
+      return route.name
+    });
     return {
-      ...toRefs(homeState),
-      onClickRight,
-      searchShop,
-      clickLeftIcon,
+      activeBar,
+      ...toRefs(tabBarState),
     }
-  },
+  }
 }
 </script>
 
 <style lang="less" scoped>
-  .wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      .header-bar {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          width: 750px;
-          height: 92px;
-          background: #07c160;
-          overflow: hidden;
-      }
-      .header-row {
-          height: 100%;
-      }
-      .location-col {
-          text-align: center;
-      }
-      .login-col {
-          height: 100%;
-          line-height: 92px;
-          text-align: center;
-          color: #fff;
-          font-size: 28px;
-      }
-      .search-bar {
-          padding: 0;
-      }
-      .con-section {
-        padding-top: 92px;
-        width: 750px;
-      }
+  .main {
+    min-height: 100vh;
   }
 </style>
