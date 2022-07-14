@@ -1,6 +1,7 @@
 import {createRouter, createWebHashHistory} from 'vue-router';
 
 const Home = ()=> import('../views/Home.vue');
+const Mall = ()=> import('../views/Mall.vue');
 const MaterialDelivery = ()=> import('../views/materialDelivery.vue');
 const Register = ()=> import('../views/Register.vue');
 const Login = ()=> import('../views/Login.vue');
@@ -12,8 +13,34 @@ const routes = [
   {
     path: '/',
     name: 'Home',
+    redirect: '/mall',
     component: Home,
-    meta: {title: '商城首页', keepAlive: false}
+    children: [
+      {
+        path: 'mall',
+        name: 'Mall',
+        component: Mall,
+        meta: {title: '商城首页', keepAlive: false},
+      },
+      {
+        path: 'category',
+        name: 'Category',
+        component: Category,
+        meta: {title: '商品分类', keepAlive: false}
+      },
+      {
+        path: 'shopcar',
+        name: 'ShopCar',
+        component: ShopCar,
+        meta: {title: '购物车', keepAlive: false}
+      },
+      {
+        path: 'members',
+        name: 'Members',
+        component: Members,
+        meta: {title: '会员中心', keepAlive: false}
+      }
+    ]
   },
   {
     path: '/materialDelivery',
@@ -32,24 +59,6 @@ const routes = [
     name: 'Login',
     component: Login,
     meta: {title: '用户登录', keepAlive: false}
-  },
-  {
-    path: '/category',
-    name: 'Category',
-    component: Category,
-    meta: {title: '商品分类', keepAlive: false}
-  },
-  {
-    path: '/shopcar',
-    name: 'ShopCar',
-    component: ShopCar,
-    meta: {title: '购物车', keepAlive: false}
-  },
-  {
-    path: '/members',
-    name: 'Members',
-    component: Members,
-    meta: {title: '会员中心', keepAlive: false}
   }
 ]
 
