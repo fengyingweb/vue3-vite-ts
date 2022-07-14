@@ -52,6 +52,24 @@
         <img class="ad-img" v-lazy="adBannerGetters" alt="图片不存在"/>
       </section>
       <!--end 公告-->
+
+      <!--start recommend-->
+      <section class="recommend-wrapper">
+        <h3 class="recommend-title">商品推荐</h3>
+        <div class="recommend-body">
+          <swiper
+            :slides-per-view="3">
+            <swiper-slide v-for="item in recommendGoodsGetters " :key="item.goodsId" @click="clickSlideItem(item.goodsId)">
+              <div class="recommend-item">
+                <img class="recommend-img" :src="item.image" :alt="item.goodsName" />
+                <div>{{item.goodsName}}</div>
+                <div>￥{{moneyFilter(item.price)}}(￥{{moneyFilter(item.mallPrice)}})</div>
+              </div>
+            </swiper-slide> 
+          </swiper>
+        </div>
+      </section>
+      <!---end recommend-->
     </section>
   </div>
 </template>
@@ -63,16 +81,19 @@ import {mallStore} from '../store/mall';
 import {storeToRefs} from 'pinia';
 import { ResData } from '../interface/index';
 import { Col, Row, Search, Swipe, SwipeItem, Grid, GridItem } from 'vant';
+import {Swiper , SwiperSlide} from 'vue-awesome-swiper'
 export default {
   name: 'Home',
   components: {
+    Swiper,
+    SwiperSlide,
     [Row.name]: Row,
     [Col.name]: Col,
     [Search.name]: Search,
     [Swipe.name]: Swipe,
     [SwipeItem.name]: SwipeItem,
     [Grid.name]: Grid,
-    [GridItem.name]: GridItem
+    [GridItem.name]: GridItem,
   },
   setup() {
     const {globalProperties} = getCurrentInstance().appContext.config;
@@ -85,6 +106,7 @@ export default {
       bannerListsGetters,
       indexCategoryGetters,
       adBannerGetters,
+      recommendGoodsGetters,
     } = storeToRefs(mallState);
 
     const searchShop = (val:string)=> {
@@ -111,6 +133,7 @@ export default {
           mallState.bannerLists = res.data.slides;
           mallState.indexCategory = res.data.category;
           mallState.adBanner = res.data.advertesPicture.PICTURE_ADDRESS;
+          mallState.recommendGoods = res.data.recommend;
         })
       }
     }
@@ -124,6 +147,15 @@ export default {
     const clickGrid = (mallCategoryId: string)=> {
       console.log(mallCategoryId)
     }
+
+    const moneyFilter = (money = 0)=> {
+      return money.toFixed(2)
+    }
+
+    // 点击商品推荐
+    const clickSlideItem = (goodsId: string)=> {
+      console.log(goodsId)
+    }
     onMounted(()=> {
       initData()
     })
@@ -132,11 +164,14 @@ export default {
       bannerListsGetters,
       indexCategoryGetters,
       adBannerGetters,
+      recommendGoodsGetters,
       onClickRight,
       searchShop,
       clickLeftIcon,
       clickBanner,
       clickGrid,
+      moneyFilter,
+      clickSlideItem,
     }
   },
 }
@@ -198,6 +233,34 @@ export default {
       .ad-img {
           display: block;
           width: 100%;
+      }
+      .recommend-wrapper {
+          width: 100%;
+      }
+      .recommend-title {
+          border-bottom: 2px solid #eee;
+          padding-top: 16px;
+          padding-bottom: 16px;
+          padding-left: 32px;
+          width: 100%;
+          background: #fff;
+          color: #f56;
+      }
+      .recommend-body {
+          border-bottom: 2px solid #eee;
+          width: 100%;
+          background: #fff;
+      }
+      .recommend-item{
+          width: 99%;
+          border-right: 2px solid #eee;
+          padding-left: 10px;
+          padding-right: 10px;
+          font-size: 24px;
+          text-align: center;
+      }
+      .recommend-img {
+        width: 80%;
       }
   }
 </style>
