@@ -7,12 +7,14 @@ export const mallStore = defineStore('mall', {
       bannerLists: [], // banner列表
       indexCategory: [], // grid列表
       adBanner: '', // 广告图片
+      recommendGoods: [], // 推荐商品
     }
   },
   getters: {
     bannerListsGetters: (state)=> state.bannerLists,
     indexCategoryGetters: (state)=> state.indexCategory,
-    adBannerGetters: (state)=> state.adBanner
+    adBannerGetters: (state)=> state.adBanner,
+    recommendGoodsGetters: (state)=> state.recommendGoods,
   },
   actions: {
     async goRegister(userInfo: User) {
