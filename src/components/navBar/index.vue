@@ -16,6 +16,7 @@
 import { defineComponent, computed } from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 export default defineComponent({
+  name: 'mNavBar',
   props: {
     navTitle: {
       type: String,
@@ -52,7 +53,7 @@ export default defineComponent({
     height: 92px;
   }
   .m-nav-bar {
-    background-color: #f56;
+    background-color: #07c160;
   }
 </style>
 
