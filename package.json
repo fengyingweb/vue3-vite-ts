@@ -13,6 +13,7 @@
     "axios": "^0.26.0",
     "crypto-js": "^4.1.1",
     "debounce-ajax": "^1.0.7",
+    "fastclick": "^1.0.6",
     "js-cookie": "^3.0.1",
     "lib-flexible": "^0.3.2",
     "lodash": "^4.17.21",
@@ -24,6 +25,7 @@
     "vant": "^3.4.5",
     "vconsole": "^3.12.1",
     "vue": "^3.2.25",
+    "vue-awesome-swiper": "^5.0.1",
     "vue-router": "4",
     "vue-types": "^4.1.1",
     "vuex": "^4.0.2"
