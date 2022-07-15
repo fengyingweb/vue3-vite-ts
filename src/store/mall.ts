@@ -8,6 +8,11 @@ export const mallStore = defineStore('mall', {
       indexCategory: [], // grid列表
       adBanner: '', // 广告图片
       recommendGoods: [], // 推荐商品
+      floor1: [],
+      floor2: [],
+      floor3: [],
+      floorName: {},
+      hotGoods: []
     }
   },
   getters: {
@@ -15,6 +20,11 @@ export const mallStore = defineStore('mall', {
     indexCategoryGetters: (state)=> state.indexCategory,
     adBannerGetters: (state)=> state.adBanner,
     recommendGoodsGetters: (state)=> state.recommendGoods,
+    floor1Getters: (state)=> state.floor1,
+    floor2Getters: (state)=> state.floor2,
+    floor3Getters: (state)=> state.floor3,
+    floorNameGetters: (state)=> state.floorName,
+    hotGoodsGetters: (state)=> state.hotGoods,
   },
   actions: {
     async goRegister(userInfo: User) {
