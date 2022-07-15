@@ -72,6 +72,7 @@ export default {
 
 <style lang="less" scoped>
   .main {
+    padding-bottom: 132px;
     min-height: 100vh;
   }
 </style>

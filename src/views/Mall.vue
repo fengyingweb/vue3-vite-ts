@@ -24,7 +24,7 @@
       <!--start banner-->
       <section class="banner-wrapper">
         <van-swipe :autoplay="3000" indicator-color="#07c160" lazy-render>
-          <van-swipe-item v-for="item in bannerListsGetters" :key="item.goodsId" @click="clickBanner(item.goodsId)">
+          <van-swipe-item v-for="item in bannerListsGetters" :key="item.goodsId" @click="clickGoods(item.goodsId)">
             <img class="swipe-img" :src="item.image" alt="图片不存在" />
           </van-swipe-item>
         </van-swipe>
@@ -59,7 +59,7 @@
         <div class="recommend-body">
           <swiper
             :slides-per-view="3">
-            <swiper-slide v-for="item in recommendGoodsGetters " :key="item.goodsId" @click="clickSlideItem(item.goodsId)">
+            <swiper-slide v-for="item in recommendGoodsGetters " :key="item.goodsId" @click="clickGoods(item.goodsId)">
               <div class="recommend-item">
                 <img class="recommend-img" :src="item.image" :alt="item.goodsName" />
                 <div>{{item.goodsName}}</div>
@@ -70,6 +70,36 @@
         </div>
       </section>
       <!---end recommend-->
+      <!--start floor-->
+      <section class="floor-wrapper">
+        <floor :floor-title="floorNameGetters.floor1" :floor-data="floor1Getters" @click="clickGoods"></floor>
+        <floor :floor-title="floorNameGetters.floor2" :floor-data="floor2Getters" @click="clickGoods"></floor>
+        <floor :floor-title="floorNameGetters.floor3" :floor-data="floor3Getters" @click="clickGoods"></floor>
+      </section>
+      <!--end floor-->
+
+      <!--start hot goods-->
+      <section class="hot-wrapper">
+        <h4 v-once class="hot-title">热卖商品</h4>
+        <section class="hot-body">
+          <van-grid :column-num="2">
+            <van-grid-item
+              v-for="item in hotGoodsGetters"
+              :key="item.goodsId"
+              class="hot-item"
+              @click="clickGoods(item.goodsId)">
+              <template #icon>
+                <img class="hot-img" v-lazy="item.image" alt="图片不存在" />
+              </template>
+              <template #text>
+                <div class="hot-desc">{{item.name}}</div>
+                <div>￥{{moneyFilter(item.price)}}</div>
+              </template>
+            </van-grid-item>
+          </van-grid>
+        </section>
+      </section>
+      <!--end hot goods-->
     </section>
   </div>
 </template>
@@ -80,13 +110,15 @@ import {useRouter} from 'vue-router';
 import {mallStore} from '../store/mall';
 import {storeToRefs} from 'pinia';
 import { ResData } from '../interface/index';
+import Floor from '../components/floor/index';
 import { Col, Row, Search, Swipe, SwipeItem, Grid, GridItem } from 'vant';
-import {Swiper , SwiperSlide} from 'vue-awesome-swiper'
+import {Swiper , SwiperSlide} from 'vue-awesome-swiper';
 export default {
   name: 'Home',
   components: {
     Swiper,
     SwiperSlide,
+    Floor,
     [Row.name]: Row,
     [Col.name]: Col,
     [Search.name]: Search,
@@ -107,6 +139,11 @@ export default {
       indexCategoryGetters,
       adBannerGetters,
       recommendGoodsGetters,
+      floor1Getters,
+      floor2Getters,
+      floor3Getters,
+      floorNameGetters,
+      hotGoodsGetters,
     } = storeToRefs(mallState);
 
     const searchShop = (val:string)=> {
@@ -134,27 +171,33 @@ export default {
           mallState.indexCategory = res.data.category;
           mallState.adBanner = res.data.advertesPicture.PICTURE_ADDRESS;
           mallState.recommendGoods = res.data.recommend;
+          mallState.floor1 = res.data.floor1;
+          mallState.floor2 = res.data.floor2;
+          mallState.floor3 = res.data.floor3;
+          mallState.floorName = res.data.floorName;
+          mallState.hotGoods = res.data.hotGoods;
         })
       }
     }
     
-    // 点击banner
-    const clickBanner = (goodsId: string)=> {
-      console.log(goodsId)
+    // 点击商品
+    const clickGoods = (goodsId: string)=> {
+      console.log(goodsId);
     }
 
     // 点击grid
     const clickGrid = (mallCategoryId: string)=> {
       console.log(mallCategoryId)
+      router.push({
+        path: '/category',
+        query: {
+          categoryId: mallCategoryId
+        }
+      })
     }
 
     const moneyFilter = (money = 0)=> {
       return money.toFixed(2)
-    }
-
-    // 点击商品推荐
-    const clickSlideItem = (goodsId: string)=> {
-      console.log(goodsId)
     }
     onMounted(()=> {
       initData()
@@ -165,13 +208,17 @@ export default {
       indexCategoryGetters,
       adBannerGetters,
       recommendGoodsGetters,
+      floor1Getters,
+      floor2Getters,
+      floor3Getters,
+      floorNameGetters,
+      hotGoodsGetters,
       onClickRight,
       searchShop,
       clickLeftIcon,
-      clickBanner,
+      clickGoods,
       clickGrid,
       moneyFilter,
-      clickSlideItem,
     }
   },
 }
@@ -189,6 +236,7 @@ export default {
           height: 92px;
           background: #07c160;
           overflow: hidden;
+          z-index: 999;
       }
       .header-row {
           height: 100%;
@@ -260,7 +308,38 @@ export default {
           text-align: center;
       }
       .recommend-img {
-        width: 80%;
+          width: 80%;
+      }
+      .floor-wrapper {
+          width: 100%;
+      }
+      .hot-wrapper {
+          width: 100%;
+      }
+      .hot-title {
+          line-height: 72px;
+          text-align: center;
+          color: #333;
+      }
+      .hot-body {
+          width: 100%;
+      }
+      .hot-item {
+          width: 375px;
+      }
+      .hot-img {
+          display: block;
+          width: 320px;
+      }
+      .hot-desc {
+          width: 320px;
+          line-height: 48px;
+          text-align: center;
+          font-size: 28px;
+          color: #333;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
       }
   }
 </style>
