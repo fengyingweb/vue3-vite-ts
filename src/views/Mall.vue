@@ -79,26 +79,7 @@
       <!--end floor-->
 
       <!--start hot goods-->
-      <section class="hot-wrapper">
-        <h4 v-once class="hot-title">热卖商品</h4>
-        <section class="hot-body">
-          <van-grid :column-num="2">
-            <van-grid-item
-              v-for="item in hotGoodsGetters"
-              :key="item.goodsId"
-              class="hot-item"
-              @click="clickGoods(item.goodsId)">
-              <template #icon>
-                <img class="hot-img" v-lazy="item.image" alt="图片不存在" />
-              </template>
-              <template #text>
-                <div class="hot-desc">{{item.name}}</div>
-                <div>￥{{moneyFilter(item.price)}}</div>
-              </template>
-            </van-grid-item>
-          </van-grid>
-        </section>
-      </section>
+      <hot-goods title="热卖商品" :hot-goods-list="hotGoodsGetters" @click="clickGoods"></hot-goods>
       <!--end hot goods-->
     </section>
   </div>
@@ -111,7 +92,8 @@ import {mallStore} from '../store/mall';
 import {storeToRefs} from 'pinia';
 import { ResData } from '../interface/index';
 import Floor from '../components/floor/index';
-import { Col, Row, Search, Swipe, SwipeItem, Grid, GridItem } from 'vant';
+import HotGoods from '../components/hotGoods/index';
+import { Col, Row, Search, Swipe, SwipeItem, } from 'vant';
 import {Swiper , SwiperSlide} from 'vue-awesome-swiper';
 export default {
   name: 'Home',
@@ -119,13 +101,12 @@ export default {
     Swiper,
     SwiperSlide,
     Floor,
+    HotGoods,
     [Row.name]: Row,
     [Col.name]: Col,
     [Search.name]: Search,
     [Swipe.name]: Swipe,
     [SwipeItem.name]: SwipeItem,
-    [Grid.name]: Grid,
-    [GridItem.name]: GridItem,
   },
   setup() {
     const {globalProperties} = getCurrentInstance().appContext.config;

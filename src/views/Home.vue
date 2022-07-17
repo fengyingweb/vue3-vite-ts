@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div :class="['main', activeBar === 'Category' && 'category-main']">
     <router-view v-slot="{ Component }">
       <transition
         name="fade"
@@ -72,7 +72,11 @@ export default {
 
 <style lang="less" scoped>
   .main {
-    padding-bottom: 132px;
-    min-height: 100vh;
+      padding-bottom: 132px;
+      min-height: 100vh;
+  }
+  .category-main {
+      height: 100vh;
+      overflow: hidden;
   }
 </style>
