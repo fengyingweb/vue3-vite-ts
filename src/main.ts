@@ -5,7 +5,21 @@ import '@/assets/css/vue2-animate.css'
 import '@/assets/css/swiper.min.css'
 import { createPinia } from 'pinia'
 import router from './router'
-import { Dialog, Toast, Popup, Icon, Field, Button, Picker, CellGroup, NavBar, Collapse, CollapseItem, Lazyload } from 'vant'
+import {
+  Dialog,
+  Toast,
+  Popup,
+  Icon,
+  Field,
+  Button,
+  Picker,
+  CellGroup,
+  NavBar,
+  Collapse,
+  CollapseItem,
+  Lazyload,
+  Grid,
+  GridItem, } from 'vant'
 import {displayConvertTo, displayStyleControl, numberFix} from './utils/directive'
 import './mock'
 
@@ -26,7 +40,8 @@ numberFix(app)
 
 app.use(Dialog).use(Toast).use(Popup).use(Icon).use(Field)
   .use(Button).use(Picker).use(CellGroup).use(NavBar).use(Collapse)
-  .use(CollapseItem).use(Lazyload)
+  .use(CollapseItem).use(Lazyload).use(Grid)
+  .use(GridItem)
 
 app.use(router).use(pinia)
 
