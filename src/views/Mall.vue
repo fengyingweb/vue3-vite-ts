@@ -126,7 +126,6 @@ export default {
       floorNameGetters,
       hotGoodsGetters,
     } = storeToRefs(mallState);
-
     const searchShop = (val:string)=> {
       console.log(val)
     }
@@ -136,7 +135,6 @@ export default {
     const onClickRight = ()=> {
       router.push({path: '/login'});
     }
-
     const initData = async ()=> {
       globalProperties.$toast.loading({
         duration: 0,
@@ -165,7 +163,6 @@ export default {
     const clickGoods = (goodsId: string)=> {
       console.log(goodsId);
     }
-
     // 点击grid
     const clickGrid = (mallCategoryId: string)=> {
       console.log(mallCategoryId)
@@ -176,7 +173,6 @@ export default {
         }
       })
     }
-
     const moneyFilter = (money = 0)=> {
       return money.toFixed(2)
     }
@@ -293,34 +289,6 @@ export default {
       }
       .floor-wrapper {
           width: 100%;
-      }
-      .hot-wrapper {
-          width: 100%;
-      }
-      .hot-title {
-          line-height: 72px;
-          text-align: center;
-          color: #333;
-      }
-      .hot-body {
-          width: 100%;
-      }
-      .hot-item {
-          width: 375px;
-      }
-      .hot-img {
-          display: block;
-          width: 320px;
-      }
-      .hot-desc {
-          width: 320px;
-          line-height: 48px;
-          text-align: center;
-          font-size: 28px;
-          color: #333;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
       }
   }
 </style>
