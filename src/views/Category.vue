@@ -38,7 +38,7 @@
                           v-for="goodsItem in goodListGetters"
                           :key="goodsItem.ID"
                           class="goods-item"
-                          @click="clickGoods(goodsItem.SHOP_ID)">
+                          @click="clickGoods(goodsItem.ID)">
                           <template #icon>
                             <img class="goods-img" v-lazy="goodsItem.IMAGE1" alt="图片不存在" />
                           </template>
