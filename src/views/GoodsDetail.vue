@@ -22,12 +22,30 @@
         </van-tabs>
       </div>
     </section>
+    <footer class="goods-footer">
+      <div class="flex-row justify-between align-center goods-tabbar">
+        <div class="flex-row align-center tabbar-left">
+          <div class="flex-column align-center">
+            <van-icon name="service-o" size="20px" color="#333" />
+            <span class="tabbar-left-tip">客服</span>
+          </div>
+          <div class="flex-column align-center mr-l" @click="goShopCar">
+            <van-icon name="shopping-cart-o" size="20px" color="#333" />
+            <span class="tabbar-left-tip">购物车</span>
+          </div>
+        </div>
+        <div class="flex-row justify-between align-center tabbar-right">
+          <van-button class="tabbar-right-btn" round size="small" color="linear-gradient(to right, #ff6034, #ee0a24)">加入购物车</van-button>
+          <van-button class="tabbar-right-btn" round size="small" color="linear-gradient(to right, #ff6034, #ee0a24)">立即购买</van-button>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script lang="ts">
 import { ref, reactive, toRefs, onMounted, getCurrentInstance, } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { queryDetailGoodsInfo, } from '../http/mall';
 import { DetailParams, ResData, } from '../interface';
 import mNavBar from '@/components/navBar';
@@ -41,6 +59,7 @@ export default {
   },
   setup() {
     const {globalProperties} = getCurrentInstance().appContext.config;
+    const router = useRouter();
     const route = useRoute();
     const activeTab = ref(0);
     const detailState = reactive({
@@ -69,6 +88,10 @@ export default {
       return money.toFixed(2)
     }
 
+    const goShopCar = ()=> {
+        router.push({path: '/shopcar'})
+    }
+
     onMounted(()=> {
       initData();
     })
@@ -76,6 +99,7 @@ export default {
       ...toRefs(detailState),
       activeTab,
       moneyFilter,
+      goShopCar,
     }
   }
 }
@@ -121,5 +145,32 @@ export default {
       padding: 20px 32px;
       width: 100%;
       height: 100vh;
+  }
+  .goods-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+  }
+  .goods-tabbar {
+      padding: 0 24px;
+      width: 100%;
+      height: 100px;
+      background: #fff;
+      &>div {
+          flex-basis: 50%;
+      }
+  }
+  .tabbar-right-btn {
+      padding-left: 26px;
+      padding-right: 26px;
+  }
+  .tabbar-left-tip {
+      font-size: 24px;
+      color: #333;
+  }
+  .mr-l {
+      margin-left: 20px;
   }
 </style>

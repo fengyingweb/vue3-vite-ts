@@ -1,6 +1,9 @@
 <template>
   <div class="wrapper">
     <m-nav-bar></m-nav-bar>
+    <section class="con-section">
+      <h3>会员中心制作中...</h3>
+    </section>
   </div>
 </template>
 
@@ -18,5 +21,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+  .wrapper {
+      width: 100%;
+  }
+  .con-section {
+      padding: 32px;
+  }
 </style>

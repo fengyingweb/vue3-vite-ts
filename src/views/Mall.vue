@@ -162,6 +162,12 @@ export default {
     // 点击商品
     const clickGoods = (goodsId: string)=> {
       console.log(goodsId);
+      router.push({
+        path: '/goodsDetail',
+        query: {
+          goodsId,
+        }
+      });
     }
     // 点击grid
     const clickGrid = (mallCategoryId: string)=> {
