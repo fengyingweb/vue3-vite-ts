@@ -2,7 +2,7 @@
   <div class="nav-bar-wrapper">
     <van-nav-bar
       class="m-nav-bar"
-      :fixed="true"
+      :fixed="fixed"
       :title="title"
       left-arrow
       v-bind="$attrs"
@@ -21,6 +21,10 @@ export default defineComponent({
     navTitle: {
       type: String,
       default: ''
+    },
+    fixed: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['navBack', 'click-right'],
@@ -50,6 +54,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
   .nav-bar-wrapper {
+    width: 100%;
     height: 92px;
   }
   .m-nav-bar {
