@@ -8,6 +8,7 @@ const Login = ()=> import('../views/Login.vue');
 const Category = ()=> import('../views/Category.vue');
 const ShopCar = ()=> import('../views/ShopCar.vue');
 const Members = ()=> import('../views/Members.vue');
+const GoodsDetail = ()=> import('../views/GoodsDetail.vue');
 
 const routes = [
   {
@@ -59,6 +60,12 @@ const routes = [
     name: 'Login',
     component: Login,
     meta: {title: '用户登录', keepAlive: false}
+  },
+  {
+    path: '/goodsDetail',
+    name: 'GoodsDetail',
+    component: GoodsDetail,
+    meta: {title: '商品详情', keepAlive: false}
   }
 ]
 
