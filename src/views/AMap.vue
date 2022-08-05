@@ -34,7 +34,7 @@ export default {
             version: '2.0.0'
           },
         })
-        console.log(AMap);
+        // console.log(AMap);
         map = new AMap.Map('container-map', {
           viewMode: '3D',
           zoom: 5,
@@ -50,6 +50,9 @@ export default {
             [112.106257, 36.962733],
             [109.830097, 31.859027],
             [116.449181, 39.98614],
+            [113.120557, 23.015327],
+            [113.246323, 23.153888],
+            [113.889911, 27.653487]
         ];
         for(let item of positionArr){
             let marker = new AMap.Marker({
@@ -57,6 +60,17 @@ export default {
             });
             map.add(marker);
         }
+        // map.on('click', function(ev) {
+        //   // 触发事件的对象
+        //   var target = ev.target;
+        //   // 触发事件的地理坐标，AMap.LngLat 类型
+        //   var lnglat = ev.lnglat;
+        //   console.log(lnglat)
+        //   // 触发事件的像素坐标，AMap.Pixel 类型
+        //   var pixel = ev.pixel;
+        //   // 触发事件类型
+        //   var type = ev.type;
+        // });
       } catch (e) {
         console.log(e);
       }
