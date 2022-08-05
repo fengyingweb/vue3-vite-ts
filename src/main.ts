@@ -21,7 +21,6 @@ import {
   Grid,
   GridItem, } from 'vant'
 import {displayConvertTo, displayStyleControl, numberFix} from './utils/directive'
-import './mock'
 
 const app = createApp(App)
 const pinia = createPinia()
