@@ -2,7 +2,6 @@ import {createRouter, createWebHashHistory} from 'vue-router';
 
 const Home = ()=> import('../views/Home.vue');
 const Mall = ()=> import('../views/Mall.vue');
-const MaterialDelivery = ()=> import('../views/materialDelivery.vue');
 const Register = ()=> import('../views/Register.vue');
 const Login = ()=> import('../views/Login.vue');
 const Category = ()=> import('../views/Category.vue');
@@ -43,12 +42,6 @@ const routes = [
         meta: {title: '会员中心', keepAlive: false}
       }
     ]
-  },
-  {
-    path: '/materialDelivery',
-    name: 'MaterialDelivery',
-    component: MaterialDelivery,
-    meta: {title: '呼叫1', keepAlive: false}
   },
   {
     path: '/register',
