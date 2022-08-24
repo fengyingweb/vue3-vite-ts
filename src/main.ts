@@ -20,7 +20,6 @@ import {
   Lazyload,
   Grid,
   GridItem, } from 'vant'
-import {displayConvertTo, displayStyleControl, numberFix} from './utils/directive'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -31,11 +30,6 @@ router.beforeEach((to, from, next)=> {
   }
   next();
 })
-
-// 注册指令
-displayConvertTo(app)
-displayStyleControl(app)
-numberFix(app)
 
 app.use(Dialog).use(Toast).use(Popup).use(Icon).use(Field)
   .use(Button).use(Picker).use(CellGroup).use(NavBar).use(Collapse)
