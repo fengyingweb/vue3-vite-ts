@@ -28,7 +28,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup name="Floor" lang="ts">
   import { defineProps, defineEmits, computed } from 'vue'
   import { FloorData } from '../../interface'
   
