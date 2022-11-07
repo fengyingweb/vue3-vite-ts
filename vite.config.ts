@@ -2,12 +2,14 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { viteMockServe } from 'vite-plugin-mock'
 import styleImport, { VantResolve } from 'vite-plugin-style-import'
+import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 const path = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    vueSetupExtend(), // 使用script setup语法糖时，设置组件名称用的插件
     viteMockServe(),
     styleImport({
       resolves: [VantResolve()],
