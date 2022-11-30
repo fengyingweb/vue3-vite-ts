@@ -34,6 +34,7 @@
 import { ref, reactive, toRefs, getCurrentInstance } from 'vue';
 import { useRouter } from 'vue-router';
 import { mallStore } from '../store/mall';
+import userStore from '../store/user';
 import { ResData } from '../interface/index';
 // @ts-ignore
 import mNavBar from '@/components/navBar';
@@ -57,6 +58,7 @@ export default {
       passTips: '',
     });
     const store = mallStore();
+    const userState = userStore();
     
     const clickRightIcon = ()=> {
       if (rightIconName.value === 'closed-eye') {
@@ -86,8 +88,10 @@ export default {
       // @ts-ignore
       const res:ResData = await store.goLogin(params);
       if (res.code === 0) {
-        if (res.data) {
+        if (res.data && res.data.isLogin) {
           globalProperties.$toast('登录成功');
+          sessionStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
+          userState.setUserInfo(res.data.userInfo)
           router.go(-1);
         }
       } else if (res.code === 2) {

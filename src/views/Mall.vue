@@ -3,7 +3,7 @@
     <header class="header-bar">
       <van-row class="header-row" align="center" gutter="10">
         <van-col span="4" class="location-col">
-          <van-icon name="location-o" color="#fff" size="20px" />
+          <van-icon name="location-o" color="#fff" size="20px" @click="goAmap" />
         </van-col>
         <van-col span="16">
           <van-search
@@ -16,7 +16,11 @@
             @click-left-icon="clickLeftIcon">
           </van-search>
         </van-col>
-        <van-col span="4" class="login-col" @click="onClickRight">登录</van-col>
+        <van-col v-if="!userInfo" span="4" class="login-col" @click="onClickRight">登录</van-col>
+        <van-col v-else span="4" class="user-col" @click="goMembers">
+          <van-icon name="user-circle-o" color="#fff" size="20px" />
+          <span>{{userInfo.userName}}</span>
+        </van-col>
       </van-row>
     </header>
 
@@ -89,9 +93,12 @@
 import { reactive, toRefs, onMounted, getCurrentInstance } from 'vue';
 import {useRouter} from 'vue-router';
 import {mallStore} from '../store/mall';
+import userStore from '../store/user';
 import {storeToRefs} from 'pinia';
 import { ResData } from '../interface/index';
+// @ts-ignore
 import Floor from '../components/floor/index';
+// @ts-ignore
 import HotGoods from '../components/hotGoods/index';
 import { Col, Row, Search, Swipe, SwipeItem, } from 'vant';
 import {Swiper , SwiperSlide} from 'vue-awesome-swiper';
@@ -109,9 +116,11 @@ export default {
     [SwipeItem.name]: SwipeItem,
   },
   setup() {
+    // @ts-ignore
     const {globalProperties} = getCurrentInstance().appContext.config;
     const router = useRouter();
     const mallState = mallStore();
+    const userState = userStore();
     const homeState = reactive({
       searchVal: ''
     });
@@ -126,6 +135,8 @@ export default {
       floorNameGetters,
       hotGoodsGetters,
     } = storeToRefs(mallState);
+    const {userInfo} = storeToRefs(userState);
+    console.log(userInfo)
     const searchShop = (val:string)=> {
       console.log(val)
     }
@@ -135,12 +146,16 @@ export default {
     const onClickRight = ()=> {
       router.push({path: '/login'});
     }
+    const goMembers = ()=> {
+      router.push({path: '/members'});
+    }
     const initData = async ()=> {
       globalProperties.$toast.loading({
         duration: 0,
         message: '加载中...',
         forbidClick: true
       })
+      // @ts-ignore
       const res:ResData = await mallState.getAllGoodsIndex()
       globalProperties.$toast.clear()
       console.log(res)
@@ -182,6 +197,10 @@ export default {
     const moneyFilter = (money = 0)=> {
       return money.toFixed(2)
     }
+    // 点击定位
+    const goAmap = ()=> {
+      router.push({path: '/aMap'})
+    }
     onMounted(()=> {
       initData()
     })
@@ -196,12 +215,15 @@ export default {
       floor3Getters,
       floorNameGetters,
       hotGoodsGetters,
+      userInfo,
       onClickRight,
+      goMembers,
       searchShop,
       clickLeftIcon,
       clickGoods,
       clickGrid,
       moneyFilter,
+      goAmap,
     }
   },
 }
@@ -233,6 +255,11 @@ export default {
           text-align: center;
           color: #fff;
           font-size: 28px;
+      }
+      .user-col {
+        text-align: center;
+        font-size: 28px;
+        color: #fff;
       }
       .search-bar {
           padding: 0;
