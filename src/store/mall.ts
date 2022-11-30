@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia'
 import {register, login, queryAllGoodsIndex} from '../http/mall'
 import {User} from '../interface/index'
-import '../mock'
+// import '../mock'
 export const mallStore = defineStore('mall', {
   state: ()=> {
     return {
