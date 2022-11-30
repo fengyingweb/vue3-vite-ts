@@ -35,6 +35,7 @@ import { ref, reactive, toRefs, getCurrentInstance } from 'vue';
 import { useRouter } from 'vue-router';
 import { mallStore } from '../store/mall';
 import { ResData } from '../interface/index';
+// @ts-ignore
 import mNavBar from '@/components/navBar';
 
 export default {
@@ -43,6 +44,7 @@ export default {
     mNavBar
   },
   setup() {
+    // @ts-ignore
     const { globalProperties } = getCurrentInstance().appContext.config;
     const router = useRouter();
     const userName = ref('');
@@ -81,6 +83,7 @@ export default {
         userName: userName.value,
         password: password.value
       }
+      // @ts-ignore
       const res:ResData = await store.goLogin(params);
       if (res.code === 0) {
         if (res.data) {

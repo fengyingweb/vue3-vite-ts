@@ -41,26 +41,32 @@ import { Form } from 'vant';
 export default {
   name: 'Register',
   components: {
+    // @ts-ignore
     mNavBar: defineAsyncComponent(()=> import('@/components/navBar')),
     [Form.name]: Form
   },
   setup() {
+    // @ts-ignore
     const { globalProperties } = getCurrentInstance().appContext.config;
     const router = useRouter();
     const userName = ref('');
     const password = ref('');
     const loading = ref(false);
     const store = mallStore();
-
+    
+    // @ts-ignore
     const clickRegister = async (values)=> {
       console.log(values)
       if (!values) return;
       loading.value = true;
+      // @ts-ignore
       const res: ResData = await store.goRegister(values);
       loading.value = false;
       if (res.code === 0) {
         globalProperties.$toast('注册成功');
         router.replace({path: '/'});
+      } else {
+        globalProperties.$toast.fail(res.msg)
       }
     }
     return {
