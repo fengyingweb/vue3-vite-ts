@@ -35,8 +35,22 @@
           </div>
         </div>
         <div class="flex-row justify-between align-center tabbar-right">
-          <van-button class="tabbar-right-btn" round size="small" color="linear-gradient(to right, #ff6034, #ee0a24)">加入购物车</van-button>
-          <van-button class="tabbar-right-btn" round size="small" color="linear-gradient(to right, #ff6034, #ee0a24)">立即购买</van-button>
+          <van-button
+            class="tabbar-right-btn"
+            round
+            size="small"
+            color="linear-gradient(to right, #ff6034, #ee0a24)"
+            @click="addShopCar">
+            加入购物车
+          </van-button>
+          <van-button
+            class="tabbar-right-btn"
+            round
+            size="small"
+            color="linear-gradient(to right, #ff6034, #ee0a24)"
+            @click="goShopping">
+            立即购买
+          </van-button>
         </div>
       </div>
     </footer>
@@ -46,8 +60,10 @@
 <script lang="ts">
 import { ref, reactive, toRefs, onMounted, getCurrentInstance, } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import userStore from '../store/user';
 import { queryDetailGoodsInfo, } from '../http/mall';
 import { DetailParams, ResData, } from '../interface';
+// @ts-ignore
 import mNavBar from '@/components/navBar';
 import { Tab, Tabs, } from 'vant';
 
@@ -58,13 +74,16 @@ export default {
     [Tabs.name]: Tabs,
   },
   setup() {
+    // @ts-ignore
     const {globalProperties} = getCurrentInstance().appContext.config;
     const router = useRouter();
     const route = useRoute();
     const activeTab = ref(0);
+    const {userInfo} = userStore();
     const detailState = reactive({
       goodsDetail: {}
     })
+    // @ts-ignore
     const goodsId:string = route.query.goodsId
 
     // 初始化数据
@@ -77,6 +96,7 @@ export default {
       const params:DetailParams = {
         goodsId,
       };
+      // @ts-ignore
       const detailRes:ResData = await queryDetailGoodsInfo(params);
       globalProperties.$toast.clear();
       if (detailRes.code === 0) {
@@ -89,7 +109,43 @@ export default {
     }
 
     const goShopCar = ()=> {
+      if (userInfo?.userName) {
         router.push({path: '/shopcar'})
+      } else {
+        globalProperties.$dialog.confirm({
+          title: '温馨提示',
+          message: '您还没有登录，请先登录!',
+          confirmButtonText: '去登录'
+        }).then(()=> {
+          router.push({path: '/login'})
+        }).catch(()=> {})
+      }
+    }
+
+    const addShopCar = ()=> {
+      if (!userInfo?.userName) {
+        globalProperties.$dialog.confirm({
+          title: '温馨提示',
+          message: '您还没有登录，请先登录!',
+          confirmButtonText: '去登录'
+        }).then(()=> {
+          router.push({path: '/login'})
+        }).catch(()=> {})
+        return
+      }
+    }
+
+    const goShopping = ()=> {
+      if (!userInfo?.userName) {
+        globalProperties.$dialog.confirm({
+          title: '温馨提示',
+          message: '您还没有登录，请先登录!',
+          confirmButtonText: '去登录'
+        }).then(()=> {
+          router.push({path: '/login'})
+        }).catch(()=> {})
+        return
+      }
     }
 
     onMounted(()=> {
@@ -100,6 +156,8 @@ export default {
       activeTab,
       moneyFilter,
       goShopCar,
+      addShopCar,
+      goShopping
     }
   }
 }
