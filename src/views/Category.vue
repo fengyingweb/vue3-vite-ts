@@ -61,14 +61,14 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, onMounted, getCurrentInstance, nextTick, } from 'vue'
+import { computed, ref, onMounted, getCurrentInstance, nextTick, watch} from 'vue'
 import { useRouter, useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { categoryStore } from '../store/category';
 import { ResData, CategorySubParams, CategorySubLimitParams } from '../interface/index';
+// @ts-ignore
 import mNavBar from '@/components/navBar';
 import { Col, Row, Tab, Tabs, PullRefresh, List, } from 'vant';
-
 export default {
   components: {
     mNavBar,
@@ -80,6 +80,7 @@ export default {
     [List.name]: List,
   },
   setup() {
+    // @ts-ignore
     const {globalProperties} = getCurrentInstance().appContext.config;
     const router = useRouter();
     const route = useRoute();
@@ -93,7 +94,7 @@ export default {
     const refreshing = ref(false);
     const loadingList = ref(false);
     const finished = ref(false);
-
+    const total = ref(0);
     let loadingSub = false;
     let loadingGoods = false;
     const {
@@ -101,18 +102,15 @@ export default {
       categorySubGetters,
       goodListGetters,
     } = storeToRefs(categoryState);
-
     const heightStyle = computed(()=> {
       return {
         height: `${height.value}px`
       }
     })
-
     const page = {
       pageNo: 1,
       pageSize: 8
     }
-
     // 根据商品类别获取商品列表,分页查询
     const getGoodsListByCategorySubID = async (categorySubId:string)=> {
       if (loadingGoods) return;
@@ -121,20 +119,23 @@ export default {
         categorySubId,
         ...page
       }
+      // @ts-ignore
       const goodsRes:ResData = await categoryState.getLimitByCategorySubID(params);
       globalProperties.$toast.clear();
       loadingGoods = false;
       loadingList.value = false;
       if (goodsRes.code === 0) {
-        finished.value = goodsRes.data.list.length <=0 ? true : false;
+        total.value = goodsRes.data.total
         categoryState.$patch(()=> {
           if (refreshing.value) {
+            // @ts-ignore
             categoryState.goodList = [
               ...goodsRes.data.list,
               ...categoryState.goodList
             ]
             refreshing.value = false;
           } else {
+            // @ts-ignore
             categoryState.goodList = [
               ...categoryState.goodList,
               ...goodsRes.data.list
@@ -145,7 +146,6 @@ export default {
         refreshing.value = false;
       }
     }
-
     // 获取商品小类数据
     const getCategorySubList = async (params:CategorySubParams)=> {
       if (loadingSub) return;
@@ -165,7 +165,6 @@ export default {
         })
       }
     }
-
     // 初始化
     const initData = async ()=> {
       globalProperties.$toast.loading({
@@ -179,7 +178,6 @@ export default {
       })
       // 获取商品大类列表
       const categoryRes:ResData = await categoryState.getCategoryData();
-
       if (categoryRes.code === 0) {
         categoryState.$patch(()=> {
           categoryState.category = categoryRes.data || []
@@ -192,7 +190,6 @@ export default {
         height.value = window.innerHeight - (navBarHeight + tabsHeight);
       })
     }
-
     // 点击tabs
     const changeTabs = (val:number)=> {
       categoryId.value = categoryState.category[val].ID;
@@ -202,7 +199,6 @@ export default {
       });
       getCategorySubList({categoryId: categoryId.value});
     }
-
     // 点击子类
     const clickCategorySub = (id:string)=> {
       categorySubId.value = id;
@@ -217,28 +213,25 @@ export default {
       });
       getGoodsListByCategorySubID(categorySubId.value);
     }
-
     // 上拉加载
     const onLoad = ()=> {
+      if (finished.value) return
       page.pageNo += 1;
       getGoodsListByCategorySubID(categorySubId.value);
     }
-
     // 下拉刷新
     const onRefresh = ()=> {
+      if (finished.value) return
       // 清空列表数据
       finished.value = false;
-
       // 重新加载数据
       // 将 loading 设置为 true，表示处于加载状态
       loadingList.value = true;
       onLoad();
     }
-
     const moneyFilter = (money = 0)=> {
       return money.toFixed(2)
     }
-
     // 点击商品
     const clickGoods = (goodsId:string)=> {
       console.log(goodsId);
@@ -249,7 +242,11 @@ export default {
         }
       })
     }
-
+    watch(goodListGetters, () => {
+      if (goodListGetters.value.length && goodListGetters.value.length === total.value) {
+        finished.value = true
+      }
+    })
     onMounted(()=> {
       initData();
     })
