@@ -30,7 +30,7 @@
             <span class="tabbar-left-tip">客服</span>
           </div>
           <div class="flex-column align-center mr-l" @click="goShopCar">
-            <van-icon name="shopping-cart-o" size="20px" color="#333" />
+            <van-icon name="shopping-cart-o" size="20px" color="#333" :badge="shopCarCountG ? shopCarCountG : undefined" />
             <span class="tabbar-left-tip">购物车</span>
           </div>
         </div>
@@ -61,6 +61,8 @@
 import { ref, reactive, toRefs, onMounted, getCurrentInstance, } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import userStore from '../store/user';
+import shopCarStore from '../store/shopCar';
+import {storeToRefs} from 'pinia';
 import { queryDetailGoodsInfo, } from '../http/mall';
 import { DetailParams, ResData, } from '../interface';
 // @ts-ignore
@@ -80,6 +82,8 @@ export default {
     const route = useRoute();
     const activeTab = ref(0);
     const {userInfo} = userStore();
+    const shopCarState = shopCarStore();
+    const {shopCarCountG} = storeToRefs(shopCarState)
     const detailState = reactive({
       goodsDetail: {}
     })
@@ -133,6 +137,9 @@ export default {
         }).catch(()=> {})
         return
       }
+      shopCarState.$patch(()=> {
+        shopCarState.shopCarCount += 1
+      })
     }
 
     const goShopping = ()=> {
@@ -154,6 +161,7 @@ export default {
     return {
       ...toRefs(detailState),
       activeTab,
+      shopCarCountG,
       moneyFilter,
       goShopCar,
       addShopCar,

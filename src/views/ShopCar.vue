@@ -23,7 +23,7 @@ export default {
         shopCarState.shopCarCount = 3
       })
     }
-    initData()
+    // initData()
     return {}
   },
 }
