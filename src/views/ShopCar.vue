@@ -8,13 +8,22 @@
 </template>
 
 <script lang="ts">
+// @ts-ignore
 import mNavBar from '@/components/navBar';
-
+import shopCarStore from '../store/shopCar';
+import {storeToRefs} from 'pinia';
 export default {
   components: {
     mNavBar
   },
   setup() {
+    const shopCarState = shopCarStore();
+    const initData = () => {
+      shopCarState.$patch(()=> {
+        shopCarState.shopCarCount = 3
+      })
+    }
+    initData()
     return {}
   },
 }

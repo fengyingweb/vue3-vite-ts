@@ -13,7 +13,8 @@
         :key="item.name"
         :name="item.name"
         :icon="item.icon"
-        :to="item.to">
+        :badge="item.badge ? item.badge : undefined"
+        @click="clickTabbarItem(item)">
         {{item.title}}
       </van-tabbar-item>
     </van-tabbar>
@@ -21,16 +22,33 @@
 </template>
 
 <script lang="ts">
-import { reactive, computed, toRefs } from 'vue';
-import { useRoute } from 'vue-router';
+import { reactive, computed, toRefs, getCurrentInstance } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import userStore from '../store/user';
+import shopCarStore from '../store/shopCar';
+import {storeToRefs} from 'pinia';
 import { Tabbar, TabbarItem } from 'vant';
+
+interface BarItem {
+  name: string
+  icon: string
+  to: string
+  title: string
+  [key: string]: any
+}
 export default {
   components: {
     [Tabbar.name]: Tabbar,
     [TabbarItem.name]: TabbarItem,
   },
   setup() {
+    // @ts-ignore
+    const {globalProperties} = getCurrentInstance().appContext.config;
     const route = useRoute();
+    const router = useRouter();
+    const {userInfo} = userStore();
+    const shopCarState = shopCarStore();
+    const {shopCarCountG} = storeToRefs(shopCarState)
     const tabBarState = reactive({
       tabBarList: [
         {
@@ -49,7 +67,8 @@ export default {
           name: 'ShopCar',
           icon: 'shopping-cart',
           to: '/shopcar',
-          title: '购物车'
+          title: '购物车',
+          badge: shopCarCountG
         },
         {
           name: 'Members',
@@ -62,9 +81,24 @@ export default {
     const activeBar = computed(()=> {
       return route.name
     });
+
+    const clickTabbarItem = (item: BarItem) => {
+      if ((item.name === 'ShopCar' || item.name === 'Members') && !userInfo?.userName) {
+        globalProperties.$dialog.confirm({
+          title: '温馨提示',
+          message: '您还没有登录，请先登录!',
+          confirmButtonText: '去登录'
+        }).then(()=> {
+          router.push({path: '/login'})
+        }).catch(()=> {})
+        return
+      }
+      router.push({path: item.to})
+    }
     return {
-      activeBar,
       ...toRefs(tabBarState),
+      activeBar,
+      clickTabbarItem
     }
   }
 }
