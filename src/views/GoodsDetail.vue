@@ -4,6 +4,9 @@
     <section class="con-section">
       <div class="detail-banner">
         <img class="banner-img" v-lazy="goodsDetail.IMAGE1" :alt="goodsDetail.NAME" />
+        <transition name="trans-s" mode="out-in">
+          <img v-show="animate" class="animate-img" v-lazy="goodsDetail.IMAGE1" alt="goodsDetail.NAME">
+        </transition>
       </div>
       <div class="goods-info">
         <div class="goods-title">{{goodsDetail.NAME}}</div>
@@ -30,7 +33,13 @@
             <span class="tabbar-left-tip">客服</span>
           </div>
           <div class="flex-column align-center mr-l" @click="goShopCar">
-            <van-icon name="shopping-cart-o" size="20px" color="#333" :badge="shopCarCountG ? shopCarCountG : undefined" />
+            <div :class="{'shop-car': animate}" @webkitTransitionEnd="transitionEnd">
+              <van-icon
+              name="shopping-cart-o"
+              size="20px"
+              color="#333"
+              :badge="shopCarCountG ? shopCarCountG : undefined" />
+            </div>
             <span class="tabbar-left-tip">购物车</span>
           </div>
         </div>
@@ -87,6 +96,7 @@ export default {
     const detailState = reactive({
       goodsDetail: {}
     })
+    const animate = ref(false)
     // @ts-ignore
     const goodsId:string = route.query.goodsId
 
@@ -140,6 +150,12 @@ export default {
       shopCarState.$patch(()=> {
         shopCarState.shopCarCount += 1
       })
+      animate.value = true;
+    }
+
+    const transitionEnd = () => {
+      console.log('transitionEnd')
+      animate.value = false;
     }
 
     const goShopping = ()=> {
@@ -162,9 +178,11 @@ export default {
       ...toRefs(detailState),
       activeTab,
       shopCarCountG,
+      animate,
       moneyFilter,
       goShopCar,
       addShopCar,
+      transitionEnd,
       goShopping
     }
   }
@@ -238,5 +256,31 @@ export default {
   }
   .mr-l {
       margin-left: 20px;
+  }
+  .shop-car {
+    transition: transform .8s;
+    transform: rotate(-30deg);
+  }
+  .animate-img {
+    position: fixed;
+    top: 240px;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    margin-left: -100px;
+    border-radius: 100px;
+    z-index: 999;
+  }
+  .trans-s-enter-from {
+    transform: translate(0, 0) scale(1.5);
+    opacity: 0;
+  }
+  .trans-s-enter-active,
+  .trans-s-leave-active {
+    transition: all .8s;
+  }
+  .trans-s-leave-to {
+    transform: translate(-246px, 920px) scale(0.1);
+    opacity: 0;
   }
 </style>
