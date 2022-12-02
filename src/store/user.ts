@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia'
 
 const userStore = defineStore('user', {
-  state() {
+  state: ()=> {
     return {
       userInfo: sessionStorage.getItem('userInfo') ? JSON.parse(sessionStorage.getItem('userInfo') as string) : null
     }
