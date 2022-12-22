@@ -5,7 +5,7 @@
       <div class="detail-banner">
         <img class="banner-img" v-lazy="goodsDetail.IMAGE1" :alt="goodsDetail.NAME" />
         <transition name="trans-s" mode="out-in">
-          <img v-show="animate" class="animate-img" v-lazy="goodsDetail.IMAGE1" alt="goodsDetail.NAME">
+          <img v-show="animate" class="animate-img" v-lazy="goodsDetail.IMAGE1" :alt="goodsDetail.NAME">
         </transition>
       </div>
       <div class="goods-info">
@@ -63,6 +63,34 @@
         </div>
       </div>
     </footer>
+    <van-popup
+      v-model:show="showPopup"
+      closeable
+      round
+      position="bottom"
+      :safe-area-inset-bottom="true">
+      <div class="popup-content">
+        <div class="popup-goods-info">
+          <img class="popup-goods-img" v-lazy="goodsDetail.IMAGE1" :alt="goodsDetail.NAME" />
+          <div class="popup-goods-desc">
+            <div class="goods-title">{{goodsDetail.NAME}}</div>
+            <div class="goods-prize">￥{{moneyFilter(goodsDetail.PRESENT_PRICE)}}</div>
+          </div>
+        </div>
+        <div class="popup-goods-nums">
+          <div class="num-title">数量</div>
+          <van-stepper v-model="goodsNums" theme="round" button-size="22" disable-input />
+        </div>
+        <div class="popup-btn">
+          <van-button
+            color="linear-gradient(to right, #ff6034, #ee0a24)"
+            round
+            block
+            :loading="loadingConfirm"
+            @click="confirmAddCar">确定</van-button>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -73,16 +101,17 @@ import userStore from '../store/user';
 import shopCarStore from '../store/shopCar';
 import {storeToRefs} from 'pinia';
 import { queryDetailGoodsInfo, } from '../http/mall';
-import { DetailParams, ResData, } from '../interface';
+import { DetailParams, ResData, GoodsDetail} from '../interface';
 // @ts-ignore
 import mNavBar from '@/components/navBar';
-import { Tab, Tabs, } from 'vant';
+import { Tab, Tabs, Stepper} from 'vant';
 
 export default {
   components: {
     mNavBar,
     [Tab.name]: Tab,
     [Tabs.name]: Tabs,
+    [Stepper.name]: Stepper
   },
   setup() {
     // @ts-ignore
@@ -93,10 +122,16 @@ export default {
     const {userInfo} = userStore();
     const shopCarState = shopCarStore();
     const {shopCarCountG} = storeToRefs(shopCarState)
-    const detailState = reactive({
-      goodsDetail: {}
+    const goodsDetail = ref<GoodsDetail>({
+      ID: '',
+      NAME: '',
+      PRESENT_PRICE: 0,
+      IMAGE1: ''
     })
     const animate = ref(false)
+    const showPopup = ref(false)
+    const goodsNums = ref(1)
+    const loadingConfirm = ref(false)
     // @ts-ignore
     const goodsId:string = route.query.goodsId
 
@@ -114,7 +149,7 @@ export default {
       const detailRes:ResData = await queryDetailGoodsInfo(params);
       globalProperties.$toast.clear();
       if (detailRes.code === 0) {
-        detailState.goodsDetail = detailRes.data;
+        goodsDetail.value = detailRes.data;
       }
     }
 
@@ -147,10 +182,29 @@ export default {
         }).catch(()=> {})
         return
       }
-      shopCarState.$patch(()=> {
-        shopCarState.shopCarCount += 1
-      })
-      animate.value = true;
+      showPopup.value = true
+    }
+
+    const confirmAddCar = async ()=> {
+      const params = {
+        goodsId: goodsDetail.value?.ID,
+        name: goodsDetail.value?.NAME,
+        price: goodsDetail.value?.PRESENT_PRICE,
+        image: goodsDetail.value?.IMAGE1,
+        goodsNums: goodsNums.value,
+        userId: userInfo.userId
+      }
+      loadingConfirm.value = true
+      // @ts-ignore
+      const res:ResData = await shopCarState.addCar(params)
+      loadingConfirm.value = false
+      if (res.code === 0 && res.data) {
+        shopCarState.$patch(()=> {
+          shopCarState.shopCarCount = res.data.total
+          showPopup.value = false
+          animate.value = true
+        })
+      }
     }
 
     const transitionEnd = () => {
@@ -170,20 +224,25 @@ export default {
         return
       }
     }
-
+    
+    initData();
     onMounted(()=> {
-      initData();
+      console.log('mounted')
     })
     return {
-      ...toRefs(detailState),
+      goodsDetail,
       activeTab,
       shopCarCountG,
       animate,
+      showPopup,
+      goodsNums,
+      loadingConfirm,
       moneyFilter,
       goShopCar,
       addShopCar,
       transitionEnd,
-      goShopping
+      goShopping,
+      confirmAddCar
     }
   }
 }
@@ -282,5 +341,49 @@ export default {
   .trans-s-leave-to {
     transform: translate(-246px, 920px) scale(0.1);
     opacity: 0;
+  }
+  .popup-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+  }
+  .popup-goods-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 32px;
+      width: 100%;
+  }
+  .popup-goods-img {
+    border: 2px solid #e8e8e8;
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .popup-goods-desc {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-left: 32px;
+    height: 200px;
+  }
+  .popup-goods-nums {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 32px 32px;
+      width: 100%;
+  }
+  .num-title {
+    font-weight: bold;
+    font-size: 28px;
+    color: #333;
+  }
+  .popup-btn {
+      margin-top: 120px;
+      padding: 32px;
+      width: 100%;
   }
 </style>
