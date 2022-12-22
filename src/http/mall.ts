@@ -1,5 +1,14 @@
 import request from './request'
-import {User, CategorySubParams, CategorySubLimitParams, DetailParams} from '../interface/index'
+import {
+  User,
+  CategorySubParams,
+  CategorySubLimitParams,
+  DetailParams,
+  AddShopCarParams,
+  QueryShopCarParams,
+  UpdateShopCarParams,
+  DeleteCarParams
+} from '../interface/index'
 
 // 注册
 export function register(params: User) {
@@ -59,6 +68,42 @@ export function queryGoodsListByCategorySubID(params:CategorySubLimitParams) {
 export function queryDetailGoodsInfo(params: DetailParams) {
   return request({
     url: '/api/goods/getDetailGoodsInfo',
+    method: 'post',
+    data: params
+  })
+}
+
+// 添加购物车
+export function addShopCar(params: AddShopCarParams) {
+  return request({
+    url: '/api/shopCar/add',
+    method: 'post',
+    data: params
+  })
+}
+
+// 查询购物
+export function queryShopCar(params: QueryShopCarParams) {
+  return request({
+    url: '/api/shopCar/query',
+    method: 'get',
+    params
+  })
+}
+
+// 更新购物车商品数量
+export function updateShopCarNums(params: UpdateShopCarParams) {
+  return request({
+    url: '/api/shopCar/updateNums',
+    method: 'post',
+    data: params
+  })
+}
+
+// 删除购物车
+export function batchDeleteCar(params: DeleteCarParams) {
+  return request({
+    url: '/api/shopCar/batchDeleteCar',
     method: 'post',
     data: params
   })
