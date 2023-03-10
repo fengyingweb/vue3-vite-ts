@@ -2,6 +2,7 @@ import {createRouter, createWebHashHistory} from 'vue-router';
 
 const Home = ()=> import('../views/Home.vue');
 const Mall = ()=> import('../views/Mall.vue');
+const MaterialDelivery = ()=> import('../views/materialDelivery.vue');
 const Register = ()=> import('../views/Register.vue');
 const Login = ()=> import('../views/Login.vue');
 const Category = ()=> import('../views/Category.vue');
@@ -9,6 +10,8 @@ const ShopCar = ()=> import('../views/ShopCar.vue');
 const Members = ()=> import('../views/Members.vue');
 const GoodsDetail = ()=> import('../views/GoodsDetail.vue');
 const AMap = ()=> import('../views/AMap.vue');
+const G2 = ()=> import('../views/G2.vue');
+const G6 = ()=> import('../views/G6.vue');
 
 const routes = [
   {
@@ -44,6 +47,12 @@ const routes = [
     ]
   },
   {
+    path: '/materialDelivery',
+    name: 'MaterialDelivery',
+    component: MaterialDelivery,
+    meta: {title: '呼叫1', keepAlive: false}
+  },
+  {
     path: '/register',
     name: 'Register',
     component: Register,
@@ -66,6 +75,18 @@ const routes = [
     name: 'AMap',
     component: AMap,
     meta: {title: 'JSAPI Vue3地图组件示例', keepAlive: false}
+  },
+  {
+    path: '/g2',
+    name: 'G2',
+    component: G2,
+    meta: {title: '数据可视化工具AntV-G2', keepAlive: false}
+  },
+  {
+    path: '/g6',
+    name: 'G6',
+    component: G6,
+    meta: {title: '数据可视化工具AntV-G6', keepAlive: false}
   }
 ]
 
