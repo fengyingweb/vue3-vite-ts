@@ -20,6 +20,7 @@ import {
   Lazyload,
   Grid,
   GridItem, } from 'vant'
+import {displayConvertTo, displayStyleControl, numberFix} from './utils/directive'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -28,8 +29,20 @@ router.beforeEach((to, from, next)=> {
   if (to.meta && to.meta.title) {
     document.title = typeof to.meta.title === 'string' ? to.meta.title  : 'Demo';
   }
+  if (to.path === '/g6') {
+    document.documentElement.style.backgroundColor = 'transparent'
+    document.body.style.backgroundColor = 'transparent'
+  } else {
+    document.documentElement.style.backgroundColor = '#f2f2f2'
+    document.body.style.backgroundColor = '#f2f2f2'
+  }
   next();
 })
+
+// 注册指令
+displayConvertTo(app)
+displayStyleControl(app)
+numberFix(app)
 
 app.use(Dialog).use(Toast).use(Popup).use(Icon).use(Field)
   .use(Button).use(Picker).use(CellGroup).use(NavBar).use(Collapse)
