@@ -110,6 +110,12 @@ export default {
         edge.style.lineWidth = edge.weight
         edge.style.opacity = 0.6
       })
+      const minimap = new G6.Minimap({
+        size: [100, 100],
+        className: 'minimap',
+        type: 'delegate'
+      })
+      const grid = new G6.Grid()
       graph2 = new G6.Graph({
         container: "container2-g6",
         width: 800,
@@ -142,14 +148,40 @@ export default {
         },
         // fitView: true,
         // fitViewPadding: [20, 40, 50, 20],
-        // animate: true,
+        animate: true,
         layout: {
           type: 'force', // 指定为力导向布局
           preventOverlap: true, // 防止节点重叠
           linkDistance: 150 // 指定边距离为100
         },
         modes: {
-          default: ['drag-canvas', 'zoom-canvas', 'drag-node'], // 允许拖拽画布、放缩画布、拖拽节点
+          default: [
+            'drag-canvas',
+            'zoom-canvas',
+            'drag-node',
+            {
+              type: 'tooltip', // 提示框
+              formatText(model) {
+                // 提示框文本内容
+                const text = 'label: ' + model.label + '<br/> class: ' + model.class;
+                return text;
+              }
+            },
+            {
+              type: 'edge-tooltip', // 边提示框
+              formatText(model) {
+                // 边提示框文本内容
+                const text =
+                  'source: ' +
+                  model.source +
+                  '<br/> target: ' +
+                  model.target +
+                  '<br/> weight: ' +
+                  model.weight;
+                return text;
+              }
+            }
+          ], // 允许拖拽画布、放缩画布、拖拽节点
           edit: []
         },
         nodeStateStyles: {
@@ -166,6 +198,7 @@ export default {
             stroke: 'steelblue',
           },
         },
+        plugins: [minimap, grid]
       });
       graph2.data(resData);
       graph2.render();
@@ -214,9 +247,18 @@ export default {
   .con-section {
       padding: 32px;
       width: 100%;
-      background: #fff;
   }
   #container1-g6 {
       width: 100%;
+  }
+  /* 提示框的样式 */
+  :deep(.g6-tooltip) {
+      border: 1px solid #e2e2e2;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #545454;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 10px 8px;
+      box-shadow: rgb(174, 174, 174) 0px 0px 10px;
   }
 </style>
