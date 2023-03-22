@@ -12,6 +12,8 @@ const GoodsDetail = ()=> import('../views/GoodsDetail.vue');
 const AMap = ()=> import('../views/AMap.vue');
 const G2 = ()=> import('../views/G2.vue');
 const G6 = ()=> import('../views/G6.vue');
+const X6 = ()=> import('../views/X6.vue');
+const F2 = ()=> import('../views/F2.vue');
 
 const routes = [
   {
@@ -87,6 +89,18 @@ const routes = [
     name: 'G6',
     component: G6,
     meta: {title: '数据可视化工具AntV-G6', keepAlive: false}
+  },
+  {
+    path: '/x6',
+    name: 'X6',
+    component: X6,
+    meta: {title: '数据可视化工具AntV-X6', keepAlive: false}
+  },
+  {
+    path: '/f2',
+    name: 'F2',
+    component: F2,
+    meta: {title: '数据可视化工具AntV-F2', keepAlive: false}
   }
 ]
 
