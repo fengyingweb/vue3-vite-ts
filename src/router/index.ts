@@ -14,6 +14,7 @@ const G2 = ()=> import('../views/G2.vue');
 const G6 = ()=> import('../views/G6.vue');
 const X6 = ()=> import('../views/X6.vue');
 const F2 = ()=> import('../views/F2.vue');
+const ThreeDemo1 = ()=> import('../views/ThreeDemo1.vue');
 
 const routes = [
   {
@@ -101,6 +102,12 @@ const routes = [
     name: 'F2',
     component: F2,
     meta: {title: '数据可视化工具AntV-F2', keepAlive: false}
+  },
+  {
+    path: '/threeDemo1',
+    name: 'ThreeDemo1',
+    component: ThreeDemo1,
+    meta: {title: 'ThreeJs-demo1', keepAlive: false}
   }
 ]
 
