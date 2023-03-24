@@ -113,10 +113,15 @@ const initThree = ()=> {
 
   // 设置相机控件轨道控制器 OrbitControls
   const controls = new OrbitControls(camera, renderer.domElement)
+  controls.target.set( 0, 0.5, 0 )
+	controls.update()
+	controls.enablePan = false
+	controls.enableDamping = true
 
-  controls.addEventListener('change', ()=> {
-    renderer.render(scene, camera)
-  })
+  // 采用了循环渲染，就不用调用change事件了
+  // controls.addEventListener('change', ()=> {
+  //   renderer.render(scene, camera)
+  // })
 
   window.addEventListener('resize', ()=> {
     const width = canvasRef.value.clientWidth
@@ -134,6 +139,7 @@ const initThree = ()=> {
     spt.value = clock.getDelta()*1000 //毫秒
     renderer.render(scene, camera) //执行渲染操作
     mesh.rotateY(0.01) //每次绕y轴旋转0.01弧度
+    controls.update()
     requestAnimationFrame(animateRender) //请求再次执行渲染函数render，渲染下一帧
   }
 
