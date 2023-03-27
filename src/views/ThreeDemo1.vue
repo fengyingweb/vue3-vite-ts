@@ -20,12 +20,25 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 //引入性能监视器stats.js
 import Stats from 'three/addons/libs/stats.module.js';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js'; // gui.js库可视化改变三维场景, 建立一种思想，就是threejs三维空间的很多参数，不是心算出来的，往往需要可视化的方式调试出来。
 // console.log(OrbitControls)
 // console.log(THREE)
 
 const canvasRef = ref(null)
 const spt = ref(0)
 const canvasRef2 = ref(null)
+
+const handleColorChange = ( color, converSRGBToLinear = false )=> {
+
+	return function ( value ) {
+		if ( typeof value === 'string' ) {
+      value = value.replace( '#', '0x' )
+		}
+		color.setHex( value )
+		if ( converSRGBToLinear === true ) color.convertSRGBToLinear()
+	}
+
+}
 
 const initThree = ()=> {
   // 创建3D场景对象
@@ -34,13 +47,24 @@ const initThree = ()=> {
 
   // 创建一个长方体几何对象Geometry
   const geometry = new THREE.BoxGeometry(80, 80, 80)
-  // console.log(geometry)
+  // 球体
+  // const geometry = new THREE.SphereGeometry(50)
+  // 圆柱
+  // const geometry = new THREE.CylinderGeometry(50, 50, 100)
 
   // 创建一个材质对象Material MeshLambertMaterial :网格漫反射材质
-  const material = new THREE.MeshLambertMaterial({
-    color: 0xff5566, // 设置材质颜色
-    transparent: true,//开启透明
-    opacity: 0.5,//设置透明度
+  // const material = new THREE.MeshLambertMaterial({
+  //   color: 0xff5566, // 设置材质颜色
+  //   transparent: true,//开启透明
+  //   opacity: 0.8,//设置透明度
+  // })
+  // 高光材质 MeshPhongMaterial
+  const material = new THREE.MeshPhongMaterial({
+    color: 0xff5566,
+    transparent: true,
+    opacity: 0.8,
+    shininess: 20, //高光部分的亮度，默认30
+    specular: 0x444444, //高光部分的颜色
   })
   // console.log(material)
 
@@ -98,7 +122,9 @@ const initThree = ()=> {
   camera.lookAt(mesh.position) // 指向物体mesh的位置或者scene场景的位置
 
   // 创建渲染器对象
-  const renderer = new THREE.WebGLRenderer()
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true, // 锯齿属性
+  })
   // console.log(renderer)
 
   // 设置像素比
@@ -128,6 +154,20 @@ const initThree = ()=> {
   // controls.addEventListener('change', ()=> {
   //   renderer.render(scene, camera)
   // })
+
+  const gui = new GUI()
+  gui.domElement.style.position = 'absolute'
+  gui.domElement.style.right = 0
+  canvasRef.value.appendChild(gui.domElement)
+  // 光照强度可视化
+  const pointLightFolder = gui.addFolder('Point Light')
+  pointLightFolder.add(point, 'intensity', 0, 5.0)
+
+  // 材质可视化
+  const materialFolder = gui.addFolder('THREE.Material')
+  materialFolder.addColor(material, 'color')
+  materialFolder.add(material, 'transparent')
+  materialFolder.add(material, 'opacity', 0, 1).step(0.01)
 
   window.addEventListener('resize', ()=> {
     const width = canvasRef.value.clientWidth
@@ -164,7 +204,7 @@ const initThree2 = () => {
   const material = new THREE.MeshLambertMaterial({
     color: 0x67c23a,
     transparent: true,
-    opacity: 0.8
+    opacity: 1
   })
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
@@ -187,7 +227,9 @@ const initThree2 = () => {
   camera.position.set(2000, 2000, 2000)
   camera.lookAt(1000, 0, 1000)
 
-  const renderer = new THREE.WebGLRenderer()
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true
+  })
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(width, height)
   renderer.setClearColor(0xb9d3ff, 1)
