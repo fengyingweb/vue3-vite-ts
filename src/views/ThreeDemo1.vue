@@ -169,6 +169,10 @@ const initThree = ()=> {
   materialFolder.add(material, 'transparent')
   materialFolder.add(material, 'opacity', 0, 1).step(0.01)
 
+  const phongMaterialFolder = gui.addFolder('THREE.MeshPhongMaterial')
+  phongMaterialFolder.addColor(material, 'specular')
+  phongMaterialFolder.add(material, 'shininess', 0, 100)
+
   window.addEventListener('resize', ()=> {
     const width = canvasRef.value.clientWidth
     const height = canvasRef.value.clientHeight
