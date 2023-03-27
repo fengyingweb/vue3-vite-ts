@@ -7,6 +7,7 @@
     </section>
     <section ref="canvasRef" class="con-section">
     </section>
+    <section ref="canvasRef2" class="con-section"></section>
   </div>
 </template>
 
@@ -15,12 +16,16 @@ import { onMounted, ref } from 'vue'
 // @ts-ignore
 import mNavBar from '@/components/navBar'
 import * as THREE from 'three'
+// 引入相机控制器
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+//引入性能监视器stats.js
+import Stats from 'three/addons/libs/stats.module.js';
 // console.log(OrbitControls)
 // console.log(THREE)
 
 const canvasRef = ref(null)
 const spt = ref(0)
+const canvasRef2 = ref(null)
 
 const initThree = ()=> {
   // 创建3D场景对象
@@ -113,8 +118,9 @@ const initThree = ()=> {
 
   // 设置相机控件轨道控制器 OrbitControls
   const controls = new OrbitControls(camera, renderer.domElement)
-  controls.target.set( 0, 0.5, 0 )
-	controls.update()
+  const {x, y, z} = mesh.position
+  controls.target.set(x, y, z) // 相机目标观察点
+	controls.update() // update()函数内会执行camera.lookAt(controls.targe)
 	controls.enablePan = false
 	controls.enableDamping = true
 
@@ -127,6 +133,7 @@ const initThree = ()=> {
     const width = canvasRef.value.clientWidth
     const height = canvasRef.value.clientHeight
     camera.aspect = width / height
+    // 如果相机的一些属性发生了变化，需要执行updateProjectionMatrix ()方法更新相机的投影矩阵
     camera.updateProjectionMatrix()
     renderer.setSize(width, height)
   }, false)
@@ -134,20 +141,76 @@ const initThree = ()=> {
   // 渲染循环
   const clock = new THREE.Clock()
 
+  const stats = new Stats()
+  stats.domElement.style.position = 'absolute'
+  canvasRef.value.appendChild(stats.domElement)
+
   // 动画渲染
   function animateRender() {
     spt.value = clock.getDelta()*1000 //毫秒
     renderer.render(scene, camera) //执行渲染操作
     mesh.rotateY(0.01) //每次绕y轴旋转0.01弧度
     controls.update()
+    stats.update()
     requestAnimationFrame(animateRender) //请求再次执行渲染函数render，渲染下一帧
   }
 
   animateRender()
 }
 
+const initThree2 = () => {
+  const scene = new THREE.Scene()
+  const geometry = new THREE.BoxGeometry(100, 100, 100)
+  const material = new THREE.MeshLambertMaterial({
+    color: 0x67c23a,
+    transparent: true,
+    opacity: 0.8
+  })
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      const mesh = new THREE.Mesh(geometry, material)
+      mesh.position.set(i*200, 0, j*200)
+      scene.add(mesh)
+    }
+  }
+  const pointLight = new THREE.PointLight(0xffffff)
+  pointLight.position.set(2200, 1900, 2100)
+  scene.add(pointLight)
+
+  const ambient = new THREE.AmbientLight(0x444444)
+  scene.add(ambient)
+
+  const width = canvasRef2.value.clientWidth
+  const height = canvasRef2.value.clientHeight
+
+  const camera = new THREE.PerspectiveCamera(30, width / height, 1, 8000)
+  camera.position.set(2000, 2000, 2000)
+  camera.lookAt(1000, 0, 1000)
+
+  const renderer = new THREE.WebGLRenderer()
+  renderer.setPixelRatio(window.devicePixelRatio)
+  renderer.setSize(width, height)
+  renderer.setClearColor(0xb9d3ff, 1)
+  renderer.render(scene, camera)
+
+  canvasRef2.value.appendChild(renderer.domElement)
+
+  // 设置相机控件轨道控制器 OrbitControls
+  const controls = new OrbitControls(camera, renderer.domElement)
+  controls.target.set(1000, 0, 1000) // 相机目标观察点
+	controls.update() // update()函数内会执行camera.lookAt(controls.targe)
+	controls.enablePan = false
+	controls.enableDamping = true
+
+  // 采用了循环渲染，就不用调用change事件了
+  controls.addEventListener('change', ()=> {
+    renderer.render(scene, camera)
+  })
+}
+
 onMounted(()=> {
   initThree()
+  initThree2()
 })
 </script>
 
@@ -170,6 +233,8 @@ onMounted(()=> {
     width: 300px;
   }
   .con-section {
+      position: relative;
+      margin-top: 32px;
       width: 100%;
       height: 500px;
   }
