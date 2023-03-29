@@ -31,10 +31,13 @@ const canvasRef2 = ref(null)
 const handleColorChange = ( color, converSRGBToLinear = false )=> {
 
 	return function ( value ) {
+    console.log(value)
 		if ( typeof value === 'string' ) {
       value = value.replace( '#', '0x' )
 		}
-		color.setHex( value )
+		console.log(color.getHex( value ))
+    // color.setHex(value)
+    color.set(value)
 		if ( converSRGBToLinear === true ) color.convertSRGBToLinear()
 	}
 
@@ -155,23 +158,39 @@ const initThree = ()=> {
   //   renderer.render(scene, camera)
   // })
 
+  const obj = {
+    bool: true
+  }
   const gui = new GUI()
   gui.domElement.style.position = 'absolute'
   gui.domElement.style.right = 0
   canvasRef.value.appendChild(gui.domElement)
+
+  gui.add(obj, 'bool').name('是否旋转')
+
+  // 物体坐标可视化 .addFolder()增加分组
+  const meshPosition = gui.addFolder('物体坐标')
+  meshPosition.close()
+  meshPosition.add(mesh.position, 'x', 0, 200).name('x坐标').step(1)
+  meshPosition.add(mesh.position, 'y', [-100, 0, 100]).name('y坐标')
+  meshPosition.add(mesh.position, 'z', {left: -100, center: 0, right: 100}).name('z坐标')
+
   // 光照强度可视化
-  const pointLightFolder = gui.addFolder('Point Light')
-  pointLightFolder.add(point, 'intensity', 0, 5.0)
+  const pointLightFolder = gui.addFolder('Point Light(点光源)')
+  pointLightFolder.close()
+  pointLightFolder.add(point, 'intensity', 0, 5.0).name('点光源强度').step(0.1)
 
   // 材质可视化
-  const materialFolder = gui.addFolder('THREE.Material')
-  materialFolder.addColor(material, 'color')
-  materialFolder.add(material, 'transparent')
-  materialFolder.add(material, 'opacity', 0, 1).step(0.01)
+  const materialFolder = gui.addFolder('THREE.Material(材质公共属性)')
+  materialFolder.close()
+  materialFolder.addColor(material, 'color').name('材质颜色').onChange(handleColorChange(material.color))
+  materialFolder.add(material, 'transparent').name('是否透明')
+  materialFolder.add(material, 'opacity', 0, 1).name('透明度').step(0.01)
 
-  const phongMaterialFolder = gui.addFolder('THREE.MeshPhongMaterial')
-  phongMaterialFolder.addColor(material, 'specular')
-  phongMaterialFolder.add(material, 'shininess', 0, 100)
+  const phongMaterialFolder = gui.addFolder('THREE.MeshPhongMaterial(高光材质)')
+  phongMaterialFolder.close()
+  phongMaterialFolder.addColor(material, 'specular').name('高光颜色')
+  phongMaterialFolder.add(material, 'shininess', 0, 100).name('高光亮度').step(1)
 
   window.addEventListener('resize', ()=> {
     const width = canvasRef.value.clientWidth
@@ -192,10 +211,10 @@ const initThree = ()=> {
   // 动画渲染
   function animateRender() {
     spt.value = clock.getDelta()*1000 //毫秒
-    renderer.render(scene, camera) //执行渲染操作
-    mesh.rotateY(0.01) //每次绕y轴旋转0.01弧度
+    if (obj.bool) mesh.rotateY(0.01) //每次绕y轴旋转0.01弧度
     controls.update()
     stats.update()
+    renderer.render(scene, camera) //执行渲染操作
     requestAnimationFrame(animateRender) //请求再次执行渲染函数render，渲染下一帧
   }
 
