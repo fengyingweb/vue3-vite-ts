@@ -8,6 +8,7 @@
     <section ref="canvasRef" class="con-section">
     </section>
     <section ref="canvasRef2" class="con-section"></section>
+    <section ref="canvasRef3" class="con-section"></section>
   </div>
 </template>
 
@@ -27,6 +28,7 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js'; // gui.js库可�
 const canvasRef = ref(null)
 const spt = ref(0)
 const canvasRef2 = ref(null)
+const canvasRef3 = ref(null)
 
 const handleColorChange = ( color, converSRGBToLinear = false )=> {
 
@@ -273,9 +275,135 @@ const initThree2 = () => {
   })
 }
 
+const initThree3 = () => {
+  const scene = new THREE.Scene()
+  // 创建一个空的几何体对象 缓冲类型几何体BufferGeometry
+  const geometry1 = new THREE.BufferGeometry()
+  // 类型化数组创建顶点数据
+  const vertices1 = new Float32Array([
+    0, 0, 0, //顶点1坐标
+    50, 0, 0, //顶点2坐标
+    0, 50, 0, //顶点3坐标
+    0, 0, 10, //顶点4坐标
+    0, 0, 100, //顶点5坐标
+    50, 0, 10, //顶点6坐标
+  ])
+  // 创建属性缓冲区对象
+  //3个为一组，表示一个顶点的xyz坐标
+  const attribue1 = new THREE.BufferAttribute(vertices1, 3)
+  // 设置几何体attributes属性的位置属性
+  geometry1.attributes.position = attribue1
+  // 点渲染模式
+  const pointMaterial = new THREE.PointsMaterial({
+      color: 0xffff00,
+      size: 10.0 //点对象像素尺寸
+  })
+  // 点模型对象
+  const points = new THREE.Points(geometry1, pointMaterial)
+  scene.add(points)
+
+  // 线材质对象
+  const lineMaterial = new THREE.LineBasicMaterial({
+      color: 0xff0000 //线条颜色
+  })
+  // 创建线模型对象
+  const line = new THREE.Line(geometry1, lineMaterial)
+
+  // 非连续的线条
+  // const line = new THREE.LineSegments(geometry, lineMaterial)
+
+  // 闭合线条
+  // const line = new THREE.LineLoop(geometry, lineMaterial)
+  scene.add(line)
+
+  const boxGeometry = new THREE.BoxGeometry(50, 50, 50)
+
+  // 网格材质
+  const meshMaterial = new THREE.MeshBasicMaterial({
+    color: 0x409eff,
+    side: THREE.DoubleSide // FrontSide 默认正面可见 DoubleSide 两面可见 BackSide 只有背面可见
+  })
+  
+  const mesh = new THREE.Mesh(geometry1, meshMaterial)
+  // mesh.position.set(0, 150, 0)
+  scene.add(mesh)
+
+  const geometry2 = new THREE.BufferGeometry()
+  const vertices2 = new Float32Array([
+    0, 60, 0, //顶点1坐标
+    80, 60, 0, //顶点2坐标
+    80, 140, 0, //顶点3坐标
+    // 0, 60, 0, //顶点4坐标
+    // 80, 140, 0, //顶点5坐标
+    0, 140, 0, //顶点6坐标
+  ])
+  // Uint16Array类型数组创建顶点索引数据
+  const indexes = new Uint16Array([
+      // 下面索引值对应顶点位置数据中的顶点坐标
+      0, 1, 2, 0, 2, 3,
+  ])
+  // 索引数据赋值给几何体的index属性
+  geometry2.index = new THREE.BufferAttribute(indexes, 1) //1个为一组
+
+  const attribute2 = new THREE.BufferAttribute(vertices2, 3)
+  geometry2.attributes.position = attribute2
+
+  // 设置几何体的顶点法线属性.attributes.normal
+  // geometry2.attributes.normal = attribute2
+
+  const points2 = new THREE.Points(geometry2, pointMaterial)
+  scene.add(points2)
+
+  const line2 = new THREE.LineLoop(geometry2, lineMaterial)
+  scene.add(line2)
+
+  const mesh2 = new THREE.Mesh(geometry2, meshMaterial)
+  scene.add(mesh2)
+
+  //矩形几何体PlaneGeometry的参数3,4表示细分数，默认是1,1
+  const geometry3 = new THREE.PlaneGeometry(100, 60, 2, 2)
+  geometry3.scale(2, 2, 2) // xyz缩放
+  geometry3.translate(80, 0, 0) // 沿着X轴平移
+  geometry3.rotateY(Math.PI / 3) // 沿着Y轴旋转
+  console.log('顶点位置数据', geometry3.attributes.position)
+
+  const lambertMaterial = new THREE.MeshLambertMaterial({
+    color: 0xff5566, 
+    wireframe: true,//线条模式渲染mesh对应的三角形数据
+  })
+  const mesh3 = new THREE.Mesh(geometry3, lambertMaterial)
+  mesh3.position.set(0, -120, 0)
+  scene.add(mesh3)
+
+  const pointLight = new THREE.PointLight(0xffffff)
+  pointLight.position.set(400, 200, 300)
+  scene.add(pointLight)
+
+  const ambient = new THREE.AmbientLight(0x444444)
+  scene.add(ambient)
+
+  const width = canvasRef3.value.clientWidth
+  const height = canvasRef3.value.clientHeight
+
+  const camera = new THREE.PerspectiveCamera(30, width / height, 1, 3000)
+  camera.position.set(500, 500, 500)
+  camera.lookAt(scene.position)
+
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true
+  })
+  renderer.setPixelRatio(window.devicePixelRatio)
+  renderer.setSize(width, height)
+  renderer.setClearColor(0x000000, 1)
+  renderer.render(scene, camera)
+
+  canvasRef3.value.appendChild(renderer.domElement)
+}
+
 onMounted(()=> {
   initThree()
   initThree2()
+  initThree3()
 })
 </script>
 
@@ -302,5 +430,11 @@ onMounted(()=> {
       margin-top: 32px;
       width: 100%;
       height: 500px;
+  }
+  .con-section1 {
+      position: relative;
+      margin-top: 32px;
+      width: 100%;
+      height: 800px;
   }
 </style>
