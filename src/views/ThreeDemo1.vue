@@ -24,6 +24,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js'; // gui.js库可视化改变三维场景, 建立一种思想，就是threejs三维空间的很多参数，不是心算出来的，往往需要可视化的方式调试出来。
 // console.log(OrbitControls)
 // console.log(THREE)
+import logoImg from '../assets/logo.png'
 
 const canvasRef = ref(null)
 const spt = ref(0)
@@ -50,6 +51,38 @@ const initThree = ()=> {
   const scene = new THREE.Scene()
   // console.log(scene)
 
+  //纹理贴图加载器TextureLoader
+  const textLoader = new THREE.TextureLoader()
+  // .load()方法加载图像，返回一个纹理对象Texture
+  const texture = textLoader.load(logoImg)
+  // console.log(texture)
+  // texture.offset.x += 0.5
+  // texture.offset.y += 0.5
+  // 设置阵列模式
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.RepeatWrapping
+  // uv两个方向纹理重复数量
+  texture.repeat.set(4, 4) //注意选择合适的阵列数量
+
+  /**纹理坐标0~1之间随意定义*/
+  // const uvs = new Float32Array([
+  //     0, 0, //图片左下角
+  //     1, 0, //图片右下角
+  //     1, 1, //图片右上角
+  //     0, 1, //图片左上角
+  // ])
+
+  const planeGeometry = new THREE.PlaneGeometry(150, 100)
+  // 设置顶点UV坐标
+  // planeGeometry.attributes.uv = new THREE.BufferAttribute(uvs, 2) //2个为一组,表示一个顶点的纹理坐标
+  // console.log('uv:', planeGeometry.attributes.uv)
+
+  const lambMaterial = new THREE.MeshLambertMaterial({
+    // 设置纹理贴图：Texture对象作为材质map属性的属性值
+    map: texture,//map表示材质的颜色贴图属性 map和color同时设置时会混合
+    transparent: true,
+    side: THREE.DoubleSide // 双面可见
+  })
   // 创建一个长方体几何对象Geometry
   const geometry = new THREE.BoxGeometry(80, 80, 80)
   // 球体
@@ -79,6 +112,14 @@ const initThree = ()=> {
 
   // 克隆.clone() 模型
   const mesh2 = mesh.clone()
+  mesh2.geometry = mesh.geometry.clone()
+  mesh2.material = mesh.material.clone()
+  // mesh2.geometry.translate(100, 0, 0)
+  mesh2.material.map = texture
+  mesh2.material.color.set(0xffffff)
+  mesh2.material.transparent = false
+  mesh2.material.opacity = 1
+
   const mesh3 = mesh.clone()
   // 设置网格模型在三维空间中的位置坐标，默认是坐标原点
   mesh2.position.set(0, -50, 0)
@@ -89,10 +130,14 @@ const initThree = ()=> {
   mesh3.position.copy(mesh.position)
   mesh3.position.y += 150
 
+  const mesh4 = new THREE.Mesh(planeGeometry, lambMaterial)
+  mesh4.position.set(-200, 0, 50)
+
   // 把网格模型mesh添加到三维场景scene中
   scene.add(mesh)
   scene.add(mesh2)
   scene.add(mesh3)
+  scene.add(mesh4)
 
   // AxesHelper：辅助观察的坐标系
   const axesHelper = new THREE.AxesHelper(120)
@@ -224,6 +269,7 @@ const initThree = ()=> {
   // 动画渲染
   function animateRender() {
     spt.value = clock.getDelta()*1000 //毫秒
+    texture.offset.x += 0.01
     if (obj.bool) {
       mesh.rotateY(0.01) //每次绕y轴旋转0.01弧度
       mesh2.rotation.copy(mesh.rotation) // 复制mesh旋转角度，保持和mesh的动作一致
@@ -240,19 +286,57 @@ const initThree = ()=> {
 
 const initThree2 = () => {
   const scene = new THREE.Scene()
+  const group = new THREE.Group() // 添加分组
+  group.name = '小区房子'
   const geometry = new THREE.BoxGeometry(100, 100, 100)
-  const material = new THREE.MeshLambertMaterial({
-    color: 0x67c23a,
-    transparent: true,
-    opacity: 1
-  })
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      const mesh = new THREE.Mesh(geometry, material)
-      mesh.position.set(i*200, 0, j*200)
-      scene.add(mesh)
-    }
+  for (let i = 0; i < 100; i++) {
+    const material = new THREE.MeshLambertMaterial({
+      color: 0x67c23a,
+      transparent: true,
+      opacity: 1
+    })
+    const mesh = new THREE.Mesh(geometry, material)
+    const x = (i % 10) * 200
+    const z = Math.floor(i/10) * 200
+    mesh.position.set(x, 0, z)
+    mesh.name = `${i+1}号楼`
+    group.add(mesh)
   }
+  group.position.set(-200, -100, 0)
+  scene.add(group)
+  // group.visible = false
+
+  // 递归遍历方法
+  // group.traverse((item)=> {
+  //   console.log(item.name)
+  // })
+
+  // 返回名.name为"45号楼"对应的对象
+  const nameNode45 = scene.getObjectByName('45号楼')
+  const nameNode46 = scene.getObjectByName('46号楼')
+  const nameNode55 = scene.getObjectByName('55号楼')
+  const nameNode56 = scene.getObjectByName('56号楼')
+  nameNode45.material.color.set(0xff5566)
+  nameNode46.material.color.set(0xff5566)
+  nameNode55.material.color.set(0xff5566)
+  nameNode56.material.color.set(0xff5566)
+
+  // nameNode56.visible = false
+
+  // 移除方法.remove()
+  // group.remove(nameNode56)
+
+  // 声明一个三维向量用来表示某个坐标
+  const worldPosition = new THREE.Vector3();
+  // 获取mesh的世界坐标，你会发现mesh的世界坐标受到父对象group的.position影响
+  nameNode45.getWorldPosition(worldPosition)
+  console.log('世界坐标',worldPosition)
+  console.log('本地坐标',nameNode45.position)
+  //可视化mesh的局部坐标系
+  const meshAxesHelper = new THREE.AxesHelper(200)
+  nameNode45.add(meshAxesHelper)
+  nameNode45.material.transparent = true
+  nameNode45.material.opacity = 0.5
   
   const pointLight = new THREE.PointLight(0xffffff)
   pointLight.position.set(2200, 1900, 2100)
