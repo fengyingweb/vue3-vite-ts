@@ -135,7 +135,7 @@ const initThree = ()=> {
   // 相机观察目标指向Threejs 3D空间中某个位置 .lookAt()
   // camera.lookAt(0, 0, 0) // 坐标原点
   // camera.lookAt(0, 50, 0) // y轴上位置50
-  camera.lookAt(scene.position) // 指向物体mesh的位置或者scene场景的位置
+  camera.lookAt(mesh.position) // 指向物体mesh的位置或者scene场景的位置
 
   // 创建渲染器对象
   const renderer = new THREE.WebGLRenderer({
