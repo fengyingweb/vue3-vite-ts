@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <m-nav-bar></m-nav-bar>
+    <!-- <m-nav-bar></m-nav-bar> -->
     <section class="spt-wrapper">
       <div>两帧渲染时间间隔(毫秒)：<span class="spt">{{spt}}</span></div>
       <div>帧率FPS：<span class="spt">{{1000/spt}}</span></div>
@@ -15,7 +15,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 // @ts-ignore
-import mNavBar from '@/components/navBar'
+// import mNavBar from '@/components/navBar'
 import * as THREE from 'three'
 // 引入相机控制器
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
@@ -77,11 +77,22 @@ const initThree = ()=> {
   const mesh = new THREE.Mesh(geometry, material)
   // console.log(mesh)
 
+  // 克隆.clone() 模型
+  const mesh2 = mesh.clone()
+  const mesh3 = mesh.clone()
   // 设置网格模型在三维空间中的位置坐标，默认是坐标原点
-  mesh.position.set(0, 0, 0)
+  mesh2.position.set(0, -50, 0)
+
+  // 复制.copy()位置
+  mesh.position.copy(mesh2.position)
+  mesh.position.y += 150
+  mesh3.position.copy(mesh.position)
+  mesh3.position.y += 150
 
   // 把网格模型mesh添加到三维场景scene中
   scene.add(mesh)
+  scene.add(mesh2)
+  scene.add(mesh3)
 
   // AxesHelper：辅助观察的坐标系
   const axesHelper = new THREE.AxesHelper(120)
@@ -119,12 +130,12 @@ const initThree = ()=> {
 
   // 相机在Three.js三维坐标系中的位置
   // 根据需要设置相机位置具体值 .position
-  camera.position.set(200, 300, 200)
+  camera.position.set(500, 600, 500)
 
   // 相机观察目标指向Threejs 3D空间中某个位置 .lookAt()
   // camera.lookAt(0, 0, 0) // 坐标原点
   // camera.lookAt(0, 50, 0) // y轴上位置50
-  camera.lookAt(mesh.position) // 指向物体mesh的位置或者scene场景的位置
+  camera.lookAt(scene.position) // 指向物体mesh的位置或者scene场景的位置
 
   // 创建渲染器对象
   const renderer = new THREE.WebGLRenderer({
@@ -213,7 +224,11 @@ const initThree = ()=> {
   // 动画渲染
   function animateRender() {
     spt.value = clock.getDelta()*1000 //毫秒
-    if (obj.bool) mesh.rotateY(0.01) //每次绕y轴旋转0.01弧度
+    if (obj.bool) {
+      mesh.rotateY(0.01) //每次绕y轴旋转0.01弧度
+      mesh2.rotation.copy(mesh.rotation) // 复制mesh旋转角度，保持和mesh的动作一致
+      mesh3.rotation.copy(mesh.rotation)
+    } 
     controls.update()
     stats.update()
     renderer.render(scene, camera) //执行渲染操作
@@ -238,13 +253,13 @@ const initThree2 = () => {
       scene.add(mesh)
     }
   }
+  
   const pointLight = new THREE.PointLight(0xffffff)
   pointLight.position.set(2200, 1900, 2100)
   scene.add(pointLight)
 
   const ambient = new THREE.AmbientLight(0x444444)
   scene.add(ambient)
-
   const width = canvasRef2.value.clientWidth
   const height = canvasRef2.value.clientHeight
 
