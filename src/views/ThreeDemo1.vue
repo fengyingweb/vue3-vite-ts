@@ -208,8 +208,8 @@ const initThree = ()=> {
   const {x, y, z} = mesh.position
   controls.target.set(x, y, z) // 相机目标观察点
 	controls.update() // update()函数内会执行camera.lookAt(controls.targe)
-	controls.enablePan = false
-	controls.enableDamping = true
+	controls.enablePan = false // 启用或禁用摄像机平移 默认启用true
+	controls.enableDamping = true // 是否启用阻尼（惯性）
 
   // 采用了循环渲染，就不用调用change事件了
   // controls.addEventListener('change', ()=> {
