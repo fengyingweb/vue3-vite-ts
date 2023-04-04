@@ -18,6 +18,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js'; // gui.js库可视化改变三维场景, 建立一种思想，就是threejs三维空间的很多参数，不是心算出来的，往往需要可视化的方式调试出来。
 // 引入gltf模型加载库GLTFLoader.js
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 // import logoImg from '../assets/logo.png'
 
 const canvasRef = ref(null)
@@ -47,11 +48,21 @@ const initThree = async ()=> {
 
   // 创建GLTF加载器对象
   const gltfLoader = new GLTFLoader()
+  const rgbeLoader = new RGBELoader()
   // console.log(gltfLoader)
   // 采用URL构造函数结合import.meta.url引入gltf glb文件路径
   const gltfUrl = new URL('../assets/gltf/demoLamp.glb', import.meta.url).href
-  const gltf = await gltfLoader.loadAsync(gltfUrl)
+  const rgbeUrl = new URL('../assets/textures/demoTexture1.hdr', import.meta.url).href
+  const [gltf, texture] = await Promise.all([
+    gltfLoader.loadAsync(gltfUrl),
+    rgbeLoader.loadAsync(rgbeUrl)
+  ])
   // console.log(gltf)
+  texture.encoding = THREE.sRGBEncoding
+  texture.mapping = THREE.EquirectangularReflectionMapping
+  // console.log(texture)
+  scene.background = texture
+	scene.environment = texture
   scene.add(gltf.scene)
   // 定义相机输出画布的尺寸(单位:像素px)
   const width = canvasRef.value.clientWidth
@@ -64,12 +75,12 @@ const initThree = async ()=> {
 
   // 30(fov):视场角度, width / height(aspect):Canvas画布宽高比, 1(near):近裁截面, 3000(far)：远裁截面
   // 实例化一个透视投影相机对象
-  const camera = new THREE.PerspectiveCamera(30, width / height, 1, 3000)
+  const camera = new THREE.PerspectiveCamera(50, width / height, 0.25, 20)
   // console.log(camera)
 
   // 相机在Three.js三维坐标系中的位置
   // 根据需要设置相机位置具体值 .position
-  camera.position.set(2, 2, 2)
+  camera.position.set(1, 1, 1)
 
   // 相机观察目标指向Threejs 3D空间中某个位置 .lookAt()
   camera.lookAt(0, 0, 0) // 坐标原点
