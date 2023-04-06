@@ -57,12 +57,23 @@ const initThree = async ()=> {
     gltfLoader.loadAsync(gltfUrl),
     rgbeLoader.loadAsync(rgbeUrl)
   ])
-  // console.log(gltf)
+  // console.log(gltf.scene)
   texture.encoding = THREE.sRGBEncoding
   texture.mapping = THREE.EquirectangularReflectionMapping
+  // texture.flipY = false
   // console.log(texture)
   scene.background = texture
 	scene.environment = texture
+  gltf.scene.traverse((item)=> {
+    if (item.isMesh) {
+      console.log('模型节点:', item)
+      console.log('模型节点名称:', item.name)
+    }
+  })
+  
+  // const lampMesh = gltf.scene.getObjectByName('lamp')
+  // lampMesh.material.map = texture.clone()
+
   scene.add(gltf.scene)
   // 定义相机输出画布的尺寸(单位:像素px)
   const width = canvasRef.value.clientWidth
