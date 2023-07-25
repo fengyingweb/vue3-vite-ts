@@ -1,5 +1,5 @@
 <script lang="jsx">
-import { toRaw } from 'vue';
+import { toRaw, ref, reactive, toRefs, computed, onMounted, watch } from 'vue';
 import Canvas from '@antv/f2-vue';
 import { Chart, Interval, Axis, Legend, Tooltip } from '@antv/f2';
 // @ts-ignore
@@ -53,95 +53,101 @@ const data3 = [
 ];
 export default {
   name: 'F2',
-  data() {
-    return {
-      year: '2021',
+  setup(props, ctx) {
+    const year = ref('2021')
+    const f2Data = reactive({
       chartData: data1,
       polarData: data3
-    };
-  },
-  mounted() {
-    setTimeout(() => {
-      this.year = '2022';
-      this.chartData = data2;
-    }, 5000);
-  },
-  render() {
-    const { year, chartData, polarData } = this;
-    return (
-      <div className="wrapper">
-        <MNavBar/>
-        <div className="con-section">
-          <div className="container1-f2">
-            <Canvas pixelRatio={window.devicePixelRatio}>
-              <Chart data={toRaw(chartData)}>
-                <Tooltip showTooltipMarker={true} />
-                <Axis field="genre" />
-                <Axis field="sold" />
-                <Interval
-                  x="genre"
-                  y="sold"
-                  color="genre"
-                  animation={{
-                    update: {
-                      easing: 'linear',
-                      duration: 200,
-                      property: ['x', 'y', 'width', 'height'],
-                    },
+    })
+    const comData = computed(()=> {
+      return f2Data.chartData
+    })
+    onMounted(()=> {
+      setTimeout(()=> {
+        year.value = '2022'
+        f2Data.chartData = data2
+      }, 5000)
+    })
+    return ()=> {
+      const {chartData, polarData} = f2Data
+      return (
+        <div class="wrapper">
+          <MNavBar/>
+          <div class="con-section">
+            <div>{JSON.stringify(comData.value, null, 2)}</div>
+            <div>{year.value}</div>
+            <div class="container1-f2">
+              <Canvas pixelRatio={window.devicePixelRatio}>
+                <Chart data={toRaw(chartData)}>
+                  <Tooltip showTooltipMarker={true} />
+                  <Axis field="genre" />
+                  <Axis field="sold" />
+                  <Interval
+                    x="genre"
+                    y="sold"
+                    color="genre"
+                    animation={{
+                      update: {
+                        easing: 'linear',
+                        duration: 200,
+                        property: ['x', 'y', 'width', 'height'],
+                      },
+                    }}
+                    selection={{
+                      selectedStyle: (record) => {
+                        const { xMin, xMax } = record;
+                        const width = xMax - xMin;
+                        const offset = width * 0.2;
+                        return {
+                          x: xMin - offset,
+                          width: width + offset * 2,
+                          fillOpacity: 1,
+                        };
+                      },
+                      unSelectedStyle: {
+                        fillOpacity: 0.4,
+                      },
+                    }}
+                  />
+                </Chart>
+              </Canvas>
+            </div>
+            <div class="container2-f2">
+              <Canvas pixelRatio={window.devicePixelRatio}>
+                <Chart
+                  data={toRaw(polarData)}
+                  coord={{
+                    transposed: true,
+                    type: 'polar',
                   }}
-                  selection={{
-                    selectedStyle: (record) => {
-                      const { xMin, xMax } = record;
-                      const width = xMax - xMin;
-                      const offset = width * 0.2;
-                      return {
-                        x: xMin - offset,
-                        width: width + offset * 2,
-                        fillOpacity: 1,
-                      };
-                    },
-                    unSelectedStyle: {
-                      fillOpacity: 0.4,
-                    },
-                  }}
-                />
-              </Chart>
-            </Canvas>
-          </div>
-          <div className="container2-f2">
-            <Canvas pixelRatio={window.devicePixelRatio}>
-              <Chart
-                data={toRaw(polarData)}
-                coord={{
-                  transposed: true,
-                  type: 'polar',
-                }}>
-                <Legend position="right" />
-                <Interval
-                  x="a"
-                  y="percent"
-                  adjust="stack"
-                  color={{
-                    field: 'name',
-                    range: ['#1890FF', '#13C2C2', '#2FC25B', '#FACC14', '#F04864', '#8543E0'],
-                  }}
-                  selection={{
-                    selectedStyle: (record) => {
-                      const { yMax, yMin } = record;
-                      return {
-                        // 半径放大 1.1 倍
-                        r: (yMax - yMin) * 1.1,
-                      };
-                    }
-                  }}
-                />
-              </Chart>
-            </Canvas>
+                >
+                  <Legend position="right" />
+                  <Interval
+                    x="a"
+                    y="percent"
+                    adjust="stack"
+                    color={{
+                      field: 'name',
+                      range: ['#1890FF', '#13C2C2', '#2FC25B', '#FACC14', '#F04864', '#8543E0'],
+                    }}
+                    selection={{
+                      selectedStyle: (record) => {
+                        const { yMax, yMin } = record;
+                        return {
+                          // 半径放大 1.1 倍
+                          r: (yMax - yMin) * 1.1,
+                        };
+                      }
+                    }}
+                  />
+                </Chart>
+              </Canvas>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  },
+      )
+    }
+  }
 };
 </script>
 
