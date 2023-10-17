@@ -70,14 +70,15 @@ const initThree = async ()=> {
 
   const pmremGenerator = new THREE.PMREMGenerator( renderer )
   // console.log(pmremGenerator)
-
+  const roomEnvironment = pmremGenerator.fromScene( new RoomEnvironment(), 0.04 )
+  // console.log(roomEnvironment)
   // 设置背景颜色
   // renderer.setClearColor(0xb9d3ff, 1)
   // 创建3D场景对象
   const scene = new THREE.Scene()
   // console.log(scene)
   scene.background = new THREE.Color(0xbfe3dd)
-	scene.environment = pmremGenerator.fromScene( new RoomEnvironment(), 0.04 ).texture // 场景环境属性.environment
+	scene.environment = roomEnvironment.texture // 场景环境属性.environment
 
   /**
    * 透视投影相机的四个参数fov, aspect, near, far构成一个四棱台3D空间，被称为视锥体，
@@ -134,6 +135,15 @@ const initThree = async ()=> {
 
 	mixer = new THREE.AnimationMixer( model );
 	mixer.clipAction( gltf.animations[ 0 ] ).play();
+
+  const gui = new GUI()
+  gui.domElement.style.position = 'absolute'
+  gui.domElement.style.right = 0
+  canvasRef.value.appendChild(gui.domElement)
+
+  const sceneFolder = gui.addFolder('画布背景')
+  sceneFolder.close()
+  sceneFolder.addColor(scene, 'background').name('画布颜色').onChange(handleColorChange(scene.background))
 
   window.addEventListener('resize', ()=> {
     const width = canvasRef.value.clientWidth
