@@ -17,6 +17,7 @@ const F2 = ()=> import('../views/F2.vue');
 const ThreeDemo1 = ()=> import('../views/ThreeDemo1.vue');
 const ThreeDemo2 = ()=> import('../views/ThreeDemo2.vue');
 const ThreeDemo3 = ()=> import('../views/ThreeDemo3.vue');
+const ThreeDemo4 = ()=> import('../views/ThreeDemo4.vue');
 
 const routes = [
   {
@@ -122,6 +123,12 @@ const routes = [
     name: 'ThreeDemo3',
     component: ThreeDemo3,
     meta: {title: 'ThreeJs-demo3', keepAlive: false}
+  },
+  {
+    path: '/threeDemo4',
+    name: 'ThreeDemo4',
+    component: ThreeDemo4,
+    meta: {title: 'ThreeJs-demo4', keepAlive: false}
   }
 ]
 
