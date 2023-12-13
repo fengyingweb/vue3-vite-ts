@@ -2,15 +2,19 @@
   <div class="wrapper">
     <m-nav-bar></m-nav-bar>
     <section class="con-section">
-      404 Not Found Page
+      404 Not Found Page {{pathMatch[0]}}
     </section>
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import {useRoute} from 'vue-router'
 // @ts-ignore
 import mNavBar from '@/components/navBar'
+
+const route = useRoute()
+const pathMatch = route.params.pathMatch
 onMounted(()=> {
 })
 </script>
