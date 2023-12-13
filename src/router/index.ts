@@ -18,6 +18,8 @@ const ThreeDemo1 = ()=> import('../views/ThreeDemo1.vue');
 const ThreeDemo2 = ()=> import('../views/ThreeDemo2.vue');
 const ThreeDemo3 = ()=> import('../views/ThreeDemo3.vue');
 const ThreeDemo4 = ()=> import('../views/ThreeDemo4.vue');
+const RxJsDemo = ()=> import('../views/RxJsDemo.vue');
+const NotFound = ()=> import('../views/404.vue');
 
 const routes = [
   {
@@ -129,6 +131,18 @@ const routes = [
     name: 'ThreeDemo4',
     component: ThreeDemo4,
     meta: {title: 'ThreeJs-demo4', keepAlive: false}
+  },
+  {
+    path: '/rxjsDemo',
+    name: 'RxJsDemo',
+    component: RxJsDemo,
+    meta: {title: 'rxjs-demo', keepAlive: false}
+  },
+  { // 捕获404页面
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound,
+    meta: {title: '404', keepAlive: false}
   }
 ]
 
